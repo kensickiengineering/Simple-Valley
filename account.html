@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Account | Simple Valley</title>
     <script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -33,9 +34,10 @@
                 </ul>
             </nav>
             <div class="nav-meta">
-                <a href="account.html" class="icon-btn" title="Account" aria-label="Account">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </a>
+                <a id="account-link" href="account.html" class="icon-btn" title="Account" aria-label="Account">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+    </a>
+
                 <a href="#" class="icon-btn cart-btn" title="Cart" aria-label="Cart">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
                     <span class="cart-count" id="cartCount">0</span>
@@ -49,23 +51,22 @@
         </div>
     </header>
 
-    <main>
-        <section class="page-hero-revamped">
-             <div class="hero-overlay">
-                <div class="container fade-in">
-                    <h1>Your Account</h1>
-                    <p class="lead">Login or create an account to manage your orders.</p>
+<main class="container account-section">
+    <h1 class="section-title">Your Account</h1>
+
+    <div class="account-form-container">
+        <div id="loading-state" style="text-align: center; padding: 2rem 0;">
+            <p>Loading Your Account...</p>
+        </div>
+
+        <div id="account-view" style="display: none;">
+            <div id="user-profile" style="margin-bottom: 2rem;">
                 </div>
-            </div>
-        </section>
-
-        <section class="container account-section">
-            <div class="account-form-container fade-in">
-                 <p style="text-align: center;">(Account functionality coming soon)</p>
-            </div>
-        </section>
-
-    </main>
+            <p>From here, you will soon be able to manage your newsletter subscriptions, view past orders, and manage product subscriptions.</p>
+            <button id="logout-button" class="button">Log Out</button>
+        </div>
+    </div>
+</main>
 
 <footer class="site-footer">
     <div class="container footer-grid">
@@ -138,6 +139,60 @@
     </div>
 
     <script src="assets/js/app.js"></script>
+<script src="assets/js/app.js"></script> <script>
+    // This is the page-specific logic for account.html
+    let auth0Client = null;
+
+    const configureClient = async () => {
+      auth0Client = await auth0.createAuth0Client({
+        domain: 'YOUR_AUTH0_DOMAIN',     // IMPORTANT: Replace with your value
+        clientId: 'YOUR_AUTH0_CLIENT_ID' // IMPORTANT: Replace with your value
+      });
+    };
+
+    const updateAccountUI = async () => {
+        const isAuthenticated = await auth0Client.isAuthenticated();
+
+        if (!isAuthenticated) {
+            // If the user isn't logged in, trigger the login flow.
+            // After login, they will be returned to this account page.
+            await auth0Client.loginWithRedirect({
+                authorizationParams: {
+                    redirect_uri: window.location.href
+                }
+            });
+        } else {
+            // If the user is logged in, show their info.
+            const user = await auth0Client.getUser();
+            const userProfileDiv = document.getElementById('user-profile');
+            
+            userProfileDiv.innerHTML = `
+                <h3>Welcome Back!</h3>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p>Your details will now be pre-filled for a faster checkout experience.</p>
+            `;
+
+            // Show the account content and hide the loading message
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('account-view').style.display = 'block';
+
+            // Set up the logout button's functionality
+            document.getElementById('logout-button').addEventListener('click', () => {
+                auth0Client.logout({
+                    logoutParams: {
+                        returnTo: window.location.origin // Return to the homepage after logout
+                    }
+                });
+            });
+        }
+    };
+
+    // Main function to run when the page loads
+    window.addEventListener('load', async () => {
+        await configureClient();
+        await updateAccountUI();
+    });
+</script>
 </body>
 </html>
 
