@@ -67,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeCartBtn = document.getElementById('close-cart-btn');
     const cartBody = document.getElementById('cart-body');
     const checkoutButton = document.getElementById('checkout-button');
-    // Note: The main Stripe object is no longer needed here for checkout,
-    // but it might be useful for other Stripe features (Elements, etc.) later.
     const stripe = Stripe('pk_test_51SG2EuLSl1NSHnh07iR5vfFbDRUSJbsh53vqHyj0tUzGA0qDHy0IwziAsVNkH97Pp137lJB3u4kKGasoEji0LEVZ00fSiIlSsH'); 
 
     let cart = JSON.parse(localStorage.getItem('simpleProteinCart')) || [];
@@ -194,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartUI();
 
     // --- SHOP PAGE SPECIFIC --- //
+    // This logic runs independently and should not be broken by other changes.
     if (document.querySelector('.shop-layout')) {
         const mainImg = document.getElementById('mainImg');
         const thumbs = document.querySelectorAll('.thumb');
@@ -277,200 +276,185 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-// --- STRIPE CHECKOUT LOGIC (FOR NETLIFY FUNCTIONS) --- //
-if (checkoutButton) {
-  checkoutButton.addEventListener('click', async function() { // Make this async
-    if (cart.length === 0) return;
-
-    checkoutButton.disabled = true;
-    checkoutButton.textContent = 'Processing...';
-
-    // Check if the user is authenticated
-    const isAuthenticated = await auth0Client.isAuthenticated();
-    let userEmail = null;
-
-    if (isAuthenticated) {
-        const user = await auth0Client.getUser();
-        userEmail = user.email;
-    }
-
-    // Call our Netlify Function.
-    fetch('/.netlify/functions/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // Send the cart AND the user's email
-      body: JSON.stringify({ cart: cart, userEmail: userEmail }),
-    })
-    .then(res => {
-        // ... (rest of your .then and .catch blocks remain the same)
-        if (res.ok) return res.json();
-        return res.json().then(json => Promise.reject(json));
-    })
-    .then(({ url }) => {
-        window.location = url;
-    })
-    .catch(e => {
-        console.error(e.error);
-        alert('An error occurred during checkout. Please try again.');
-        checkoutButton.disabled = false;
-        checkoutButton.textContent = 'Proceed to Checkout';
-    });
-  });
-}
-// --- AUTH0 USER AUTHENTICATION LOGIC --- //
-
-let auth0Client = null;
-
-// Initialize Auth0 client
-const configureClient = async () => {
-  auth0Client = await auth0.createAuth0Client({
-    domain: 'login.simplevalleybar.com',     // Your Auth0 domain
-    clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',    // Your Auth0 client ID
-    authorizationParams: {
-      redirect_uri: window.location.origin + '/account.html'
-    }
-  });
-};
-
-// Handle login
-const login = async () => {
-  await auth0Client.loginWithRedirect({
-    authorizationParams: {
-      redirect_uri: window.location.origin + '/account.html'
-    }
-  });
-};
-
-// Handle logout
-const logout = async () => {
-  await auth0Client.logout({
-    logoutParams: {
-      returnTo: window.location.origin
-    }
-  });
-};
-
-// Update navigation & account UI
-const updateUI = async () => {
-  const isAuthenticated = await auth0Client.isAuthenticated();
-  const accountLink = document.getElementById('account-link');
-
-  if (!accountLink) return;
-
-  if (!isAuthenticated) {
-    // Logged out: clicking the user icon triggers login
-    accountLink.onclick = (e) => {
-      e.preventDefault();
-      login();
-    };
-  } else {
-    // Logged in: clicking the icon goes to the account page
-    accountLink.onclick = null;
-    accountLink.href = '/account.html';
-  }
-
-  // If we're on account.html, show profile info
-  if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
-    const user = await auth0Client.getUser();
-    const profileDiv = document.getElementById('user-profile');
-    if (profileDiv) {
-      profileDiv.innerHTML = `
-        <h3>Welcome back!</h3>
-        <p><strong>Email:</strong> ${user.email}</p>
-        <p>Your details will be pre-filled for checkout.</p>
-      `;
-    }
-
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('account-view').style.display = 'block';
-
-    const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) logoutButton.onclick = logout;
-  }
-};
-
-// Main flow
-window.addEventListener('load', async () => {
-  await configureClient();
-
-  // Handle redirect after Auth0 login
-  const query = window.location.search;
-  if (query.includes('code=') && query.includes('state=')) {
-    await auth0Client.handleRedirectCallback();
-    window.history.replaceState({}, document.title, '/account.html');
-  }
-
-  updateUI();
-});
-// Add this function somewhere in your app.js
-async function fetchAndDisplayOrders() {
-    const container = document.getElementById('order-history-container');
-    if (!container) return;
-
-    try {
-        const isAuthenticated = await auth0Client.isAuthenticated();
-        if (!isAuthenticated) {
-            container.innerHTML = '<p>Please log in to see your orders.</p>';
-            return;
-        }
-
-        const user = await auth0Client.getUser();
-        // NOTE: For production, you should send an access token instead of the whole user object.
-        const response = await fetch('/.netlify/functions/get-order-history', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: user })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to load orders.');
-        }
-
-        const orders = await response.json();
-
-        if (orders.length === 0) {
-            container.innerHTML = '<p>You have not made any orders yet.</p>';
-            return;
-        }
-
-        // Build the HTML for the orders
-        let ordersHtml = '<div class="orders-list">';
-        orders.forEach(order => {
-            ordersHtml += `
-                <div class="order-item">
-                    <div class="order-summary">
-                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
-                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
-                    </div>
-                    <ul class="order-details">
-                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        });
-        ordersHtml += '</div>';
-        container.innerHTML = ordersHtml;
-
-    } catch (error) {
-        console.error('Order fetch error:', error);
-        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
-    }
-}
-
-// Now, call this new function inside your updateUI function
-const updateUI = async () => {
-    // ... (existing updateUI code) ...
+    // --- STRIPE CHECKOUT LOGIC (FOR NETLIFY FUNCTIONS) --- //
+    if (checkoutButton) {
+        // MODIFICATION: Made the function async to use 'await'
+        checkoutButton.addEventListener('click', async function() {
+            if (cart.length === 0) return;
     
-    // If we're on account.html, show profile info AND fetch orders
-    if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
-        // ... (existing code to show user profile) ...
-        
-        // Fetch and display the user's order history
-        fetchAndDisplayOrders(); 
+            checkoutButton.disabled = true;
+            checkoutButton.textContent = 'Processing...';
+    
+            // NEW: Check if the user is authenticated and get their email
+            const isAuthenticated = await auth0Client.isAuthenticated();
+            let userEmail = null;
+    
+            if (isAuthenticated) {
+                const user = await auth0Client.getUser();
+                userEmail = user.email;
+            }
+    
+            // Call our Netlify Function.
+            fetch('/.netlify/functions/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // MODIFICATION: Send the cart AND the user's email
+                body: JSON.stringify({ cart: cart, userEmail: userEmail }),
+            })
+            .then(res => {
+                if (res.ok) return res.json();
+                return res.json().then(json => Promise.reject(json));
+            })
+            .then(({ url }) => {
+                window.location = url;
+            })
+            .catch(e => {
+                console.error(e.error);
+                alert('An error occurred during checkout. Please try again.');
+                checkoutButton.disabled = false;
+                checkoutButton.textContent = 'Proceed to Checkout';
+            });
+        });
     }
-};
 
+    // --- AUTH0 USER AUTHENTICATION LOGIC --- //
+
+    let auth0Client = null;
+
+    // Initialize Auth0 client
+    const configureClient = async () => {
+        auth0Client = await auth0.createAuth0Client({
+            domain: 'login.simplevalleybar.com',
+            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
+            authorizationParams: {
+                redirect_uri: window.location.origin + '/account.html'
+            }
+        });
+    };
+
+    // Handle login
+    const login = async () => {
+        await auth0Client.loginWithRedirect({
+            authorizationParams: {
+                redirect_uri: window.location.origin + '/account.html'
+            }
+        });
+    };
+
+    // Handle logout
+    const logout = async () => {
+        await auth0Client.logout({
+            logoutParams: {
+                returnTo: window.location.origin
+            }
+        });
+    };
+
+    // NEW: Function to fetch and display past orders
+    async function fetchAndDisplayOrders() {
+        const container = document.getElementById('order-history-container');
+        if (!container) return;
+    
+        try {
+            const isAuthenticated = await auth0Client.isAuthenticated();
+            if (!isAuthenticated) {
+                container.innerHTML = '<p>Please log in to see your orders.</p>';
+                return;
+            }
+    
+            const user = await auth0Client.getUser();
+            const response = await fetch('/.netlify/functions/get-order-history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user: user })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to load orders.');
+            }
+    
+            const orders = await response.json();
+    
+            if (orders.length === 0) {
+                container.innerHTML = '<p>You have not made any orders yet.</p>';
+                return;
+            }
+    
+            let ordersHtml = '<div class="orders-list">';
+            orders.forEach(order => {
+                ordersHtml += `
+                    <div class="order-item">
+                        <div class="order-summary">
+                            <span class="order-date"><strong>Date:</strong> ${order.date}</span>
+                            <span class="order-total"><strong>Total:</strong> ${order.total}</span>
+                        </div>
+                        <ul class="order-details">
+                            ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+            ordersHtml += '</div>';
+            container.innerHTML = ordersHtml;
+    
+        } catch (error) {
+            console.error('Order fetch error:', error);
+            container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
+        }
+    }
+
+    // Update navigation & account UI
+    const updateUI = async () => {
+        const isAuthenticated = await auth0Client.isAuthenticated();
+        const accountLink = document.getElementById('account-link');
+    
+        if (!accountLink) return;
+    
+        if (!isAuthenticated) {
+            accountLink.onclick = (e) => {
+                e.preventDefault();
+                login();
+            };
+        } else {
+            accountLink.onclick = null;
+            accountLink.href = '/account.html';
+        }
+    
+        if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
+            const user = await auth0Client.getUser();
+            const profileDiv = document.getElementById('user-profile');
+            if (profileDiv) {
+                profileDiv.innerHTML = `
+                    <h3>Welcome back!</h3>
+                    <p><strong>Email:</strong> ${user.email}</p>
+                    <p>Your details will be pre-filled for checkout.</p>
+                `;
+            }
+    
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('account-view').style.display = 'block';
+    
+            const logoutButton = document.getElementById('logout-button');
+            if (logoutButton) logoutButton.onclick = logout;
+
+            // MODIFICATION: Call the function to get order history
+            fetchAndDisplayOrders(); 
+        }
+    };
+
+    // Main flow
+    window.addEventListener('load', async () => {
+        await configureClient();
+    
+        const query = window.location.search;
+        if (query.includes('code=') && query.includes('state=')) {
+            await auth0Client.handleRedirectCallback();
+            window.history.replaceState({}, document.title, '/account.html');
+        }
+    
+        updateUI();
+    });
 
 });
