@@ -338,34 +338,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // In app.js, inside the `updateUI` function's main `if` block...
 
-// --- Corrected Dropdown Menu Logic ---
-const connection = user?.identities?.[0]?.connection;
+document.addEventListener("DOMContentLoaded", () => {
+  const connection = user?.identities?.[0]?.connection;
 
-if (connection === "Username-Password-Authentication") {
-  document.getElementById("reset-btn").style.display = "block";
-} else {
-  document.getElementById("reset-note").innerText =
-    "You sign in with Google — manage your password in your Google account.";
-}
+  const resetBtn = document.getElementById("reset-btn");
+  const resetNote = document.getElementById("reset-note");
 
-const settingsMenu = document.querySelector('.settings-menu'); // Define the parent menu
-const settingsBtn = document.getElementById('settings-menu-btn');
-const settingsDropdown = document.getElementById('settings-dropdown-content');
+  // --- Hide or show "Change Password" only ---
+  if (resetBtn) {
+    if (connection === "Username-Password-Authentication") {
+      resetBtn.style.display = "block"; // show for DB users
+    } else {
+      resetBtn.style.display = "none"; // hide for Google or other social users
+      if (resetNote) {
+        resetNote.innerText = "You sign in with Google — manage your password in your Google account.";
+      }
+    }
+  }
 
-if (settingsMenu && settingsBtn && settingsDropdown) {
-    settingsBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevents the window click listener from firing immediately
-        settingsDropdown.classList.toggle('active');
+  // --- Dropdown menu logic ---
+  const settingsMenu = document.querySelector(".settings-menu");
+  const settingsBtn = document.getElementById("settings-menu-btn");
+  const settingsDropdown = document.getElementById("settings-dropdown-content");
+
+  if (settingsMenu && settingsBtn && settingsDropdown) {
+    settingsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      settingsDropdown.classList.toggle("active");
     });
 
-    // Close dropdown if user clicks outside of it
-    window.addEventListener('click', (e) => {
-        // Check if the click is outside the entire settings menu component
-        if (!settingsMenu.contains(e.target)) {
-            settingsDropdown.classList.remove('active');
-        }
+    window.addEventListener("click", (e) => {
+      if (!settingsMenu.contains(e.target)) {
+        settingsDropdown.classList.remove("active");
+      }
     });
-}
+  }
+});
 
             // --- Account Settings Event Listeners ---
             document.getElementById('change-email-btn')?.addEventListener('click', async () => {
