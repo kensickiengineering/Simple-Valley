@@ -277,41 +277,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- STRIPE CHECKOUT LOGIC (FOR NETLIFY FUNCTIONS) --- //
-    if (checkoutButton) {
-      checkoutButton.addEventListener('click', function() {
-        if (cart.length === 0) return;
+// --- STRIPE CHECKOUT LOGIC (FOR NETLIFY FUNCTIONS) --- //
+if (checkoutButton) {
+  checkoutButton.addEventListener('click', async function() { // Make this async
+    if (cart.length === 0) return;
 
-        // Disable the button to prevent multiple clicks
-        checkoutButton.disabled = true;
-        checkoutButton.textContent = 'Processing...';
+    checkoutButton.disabled = true;
+    checkoutButton.textContent = 'Processing...';
 
-        // Call our Netlify Function.
-        fetch('/.netlify/functions/create-checkout-session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ cart: cart }),
-        })
-        .then(res => {
-          if (res.ok) return res.json();
-          // If the server returns an error, show it to the user
-          return res.json().then(json => Promise.reject(json));
-        })
-        .then(({ url }) => {
-          // We received a checkout URL. Redirect the user to Stripe's page.
-          window.location = url;
-        })
-        .catch(e => {
-          console.error(e.error);
-          alert('An error occurred during checkout. Please try again.');
-          // Re-enable the button if the process fails
-          checkoutButton.disabled = false;
-          checkoutButton.textContent = 'Proceed to Checkout';
-        });
-      });
+    // Check if the user is authenticated
+    const isAuthenticated = await auth0Client.isAuthenticated();
+    let userEmail = null;
+
+    if (isAuthenticated) {
+        const user = await auth0Client.getUser();
+        userEmail = user.email;
     }
+
+    // Call our Netlify Function.
+    fetch('/.netlify/functions/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Send the cart AND the user's email
+      body: JSON.stringify({ cart: cart, userEmail: userEmail }),
+    })
+    .then(res => {
+        // ... (rest of your .then and .catch blocks remain the same)
+        if (res.ok) return res.json();
+        return res.json().then(json => Promise.reject(json));
+    })
+    .then(({ url }) => {
+        window.location = url;
+    })
+    .catch(e => {
+        console.error(e.error);
+        alert('An error occurred during checkout. Please try again.');
+        checkoutButton.disabled = false;
+        checkoutButton.textContent = 'Proceed to Checkout';
+    });
+  });
+}
 // --- AUTH0 USER AUTHENTICATION LOGIC --- //
 
 let auth0Client = null;
@@ -397,5 +404,73 @@ window.addEventListener('load', async () => {
 
   updateUI();
 });
+// Add this function somewhere in your app.js
+async function fetchAndDisplayOrders() {
+    const container = document.getElementById('order-history-container');
+    if (!container) return;
+
+    try {
+        const isAuthenticated = await auth0Client.isAuthenticated();
+        if (!isAuthenticated) {
+            container.innerHTML = '<p>Please log in to see your orders.</p>';
+            return;
+        }
+
+        const user = await auth0Client.getUser();
+        // NOTE: For production, you should send an access token instead of the whole user object.
+        const response = await fetch('/.netlify/functions/get-order-history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: user })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load orders.');
+        }
+
+        const orders = await response.json();
+
+        if (orders.length === 0) {
+            container.innerHTML = '<p>You have not made any orders yet.</p>';
+            return;
+        }
+
+        // Build the HTML for the orders
+        let ordersHtml = '<div class="orders-list">';
+        orders.forEach(order => {
+            ordersHtml += `
+                <div class="order-item">
+                    <div class="order-summary">
+                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
+                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
+                    </div>
+                    <ul class="order-details">
+                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        });
+        ordersHtml += '</div>';
+        container.innerHTML = ordersHtml;
+
+    } catch (error) {
+        console.error('Order fetch error:', error);
+        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
+    }
+}
+
+// Now, call this new function inside your updateUI function
+const updateUI = async () => {
+    // ... (existing updateUI code) ...
+    
+    // If we're on account.html, show profile info AND fetch orders
+    if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
+        // ... (existing code to show user profile) ...
+        
+        // Fetch and display the user's order history
+        fetchAndDisplayOrders(); 
+    }
+};
+
 
 });
