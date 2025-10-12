@@ -319,7 +319,7 @@ let auth0Client = null;
 // Initialize Auth0 client
 const configureClient = async () => {
   auth0Client = await auth0.createAuth0Client({
-    domain: 'dev-y6t0um4ltxspelep.us.auth0.com',     // Your Auth0 domain
+    domain: 'login.simplevalleybar.com',     // Your Auth0 domain
     clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',    // Your Auth0 client ID
     authorizationParams: {
       redirect_uri: window.location.origin + '/account.html'
