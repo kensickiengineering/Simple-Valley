@@ -7,7 +7,7 @@ module.exports = async () => {
   const clientSecret = process.env.AUTH0_MGT_CLIENT_SECRET;
 
   try {
-    const response = await axios.post(`https://${domain}/oauth/token`, {
+    const response = await axios.post(`https://${login.simplevalleybar.com}/oauth/token`, {
       client_id: clientId,
       client_secret: clientSecret,
       audience: `https://${login.simplevalleybar.com}/api/v2/`,
