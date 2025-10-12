@@ -344,15 +344,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("reset-btn");
   const resetNote = document.getElementById("reset-note");
 
-  // --- Hide or show "Change Password" only ---
-  if (resetBtn) {
+  // --- Show/hide Change Password depending on connection ---
+  if (resetBtn && resetNote) {
     if (connection === "Username-Password-Authentication") {
-      resetBtn.style.display = "block"; // show for DB users
+      resetBtn.style.display = "block";
+      resetNote.style.display = "none";
     } else {
-      resetBtn.style.display = "none"; // hide for Google or other social users
-      if (resetNote) {
-        resetNote.innerText = "You sign in with Google — manage your password in your Google account.";
-      }
+      resetBtn.style.display = "none";
+      resetNote.style.display = "block";
+      resetNote.innerText =
+        "You sign in with Google — manage your password in your Google account.";
     }
   }
 
@@ -374,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
 
             // --- Account Settings Event Listeners ---
             document.getElementById('change-email-btn')?.addEventListener('click', async () => {
