@@ -334,6 +334,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
             await fetchAndDisplayOrders();
 
+		// In app.js, inside the `updateUI` function's main `if` block...
+
+// --- New Dropdown Menu Logic ---
+const settingsBtn = document.getElementById('settings-menu-btn');
+const settingsDropdown = document.getElementById('settings-dropdown-content');
+
+if (settingsBtn && settingsDropdown) {
+    settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevents the window click listener from firing immediately
+        settingsDropdown.classList.toggle('active');
+    });
+
+    // Close dropdown if user clicks outside of it
+    window.addEventListener('click', (e) => {
+        if (!settingsMenu.contains(e.target)) {
+            settingsDropdown.classList.remove('active');
+        }
+    });
+}
+
             // --- Account Settings Event Listeners ---
             document.getElementById('change-email-btn')?.addEventListener('click', async () => {
                 const newEmail = prompt('Please enter your new email address:');
