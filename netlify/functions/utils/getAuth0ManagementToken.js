@@ -4,6 +4,8 @@ module.exports = async () => {
   const domain = process.env.AUTH0_DOMAIN; // should be dev-y6t0um4ltxspelep.us.auth0.com
   const clientId = process.env.AUTH0_MGT_CLIENT_ID;
   const clientSecret = process.env.AUTH0_MGT_CLIENT_SECRET;
+console.log('Auth0 domain:', domain);
+console.log('Audience:', `https://${domain}/api/v2/`);
 
   try {
     const response = await axios.post(`https://${domain}/oauth/token`, {
