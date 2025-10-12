@@ -1,214 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Home | Simple Valley</title>
-    <script src="https://js.stripe.com/v3/"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Valley | Coming Soon</title>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        :root {
+            --primary-color: #D97706;
+            --text-dark: #1F2937;
+            --background-light: #F9FAFB;
+            --white: #FFFFFF;
+            --font-body: 'Lato', sans-serif;
+            --font-heading: 'Montserrat', sans-serif;
+        }
+        body {
+            margin: 0;
+            font-family: var(--font-body);
+            color: var(--text-dark);
+            background-color: var(--background-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(12, 18, 20, 0.08);
+        }
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 1.5rem;
+        }
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        h1 {
+            font-family: var(--font-heading);
+            font-size: 2.5rem;
+            margin: 0 0 1rem;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .brand-name {
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--text-dark);
+            font-family: var(--font-heading);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-<div class="promo-banner">
-    <p>ALL PRE-ORDERS SHIP ON NOVEMBER 14. SECURE YOUR BARS TODAY FOR MAXIMAL SAVINGS!</p>
-</div>
-    <header class="site-header">
-        <div class="container nav-container">
-            <div class="logo-brand">
-                <a href="home.html" class="logo-circle" aria-label="Home">
-                    <img src="assets/img/RealLogo.png" alt="SV Logo">
-                </a>
-                <a href="home.html" class="brand-name">Simple Valley</a>
-            </div>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="ourstory.html">Our Story</a></li>
-                    <li><a href="ingredients.html">Ingredients</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </nav>
-            <div class="nav-meta">
-                <a href="account.html" class="icon-btn" title="Account" aria-label="Account">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </a>
-                <a href="#" class="icon-btn cart-btn" title="Cart" aria-label="Cart">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-            </div>
-            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </header>
-
-    <main>
-        <section class="hero hero-bg">
-            <div class="hero-overlay">
-                <div class="hero-text centered fade-in">
-                    <h1>The Beef-Liver Protein Bar</h1>
-                    <p>20g protein · Whole food ingredients · No seed oils · Nut free · Paleo</p>
-                    <a href="shop.html" class="button">Shop Now</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="container section">
-            <h2 class="section-title">The Simple Valley Difference</h2>
-            <div class="difference-grid">
-                <div class="difference-card fade-in">
-                    <div class="card-img-container"><img src="assets/img/beefliver.jpg" alt="Grass-fed Beef Liver"></div>
-                    <h3>Grass-Fed Liver in Every Bar</h3>
-                </div>
-                <div class="difference-card fade-in" style="--delay: 0.1s;">
-                    <div class="card-img-container"><img src="assets/img/Ingredients_IMG2.png" alt="Whole Food Ingredients"></div>
-                    <h3>Ultra-Clean Ingredients</h3>
-                </div>
-                <div class="difference-card fade-in" style="--delay: 0.2s;">
-                    <div class="card-img-container"><img src="assets/img/macros1.png" alt="Macros diagram"></div>
-                    <h3>Exceptional Macros</h3>
-                </div>
-                <div class="difference-card fade-in" style="--delay: 0.3s;">
-                    <div class="card-img-container"><img src="assets/img/nonuts1.png" alt="Nut-free icon"></div>
-                    <h3>No Nuts or Seeds, Ever</h3>
-                </div>
-            </div>
-        </section>
-
-        <section class="why-beef">
-            <div class="why-overlay">
-                <div class="container">
-                    <h2 class="section-title light">Why Beef Liver?</h2>
-                    <div class="why-grid">
-                        <div class="why-box fade-in">
-                            <h3>Nutrient Dense</h3>
-                            <p>Beef liver is nature’s multivitamin, packed with essential vitamins and minerals.</p>
-                        </div>
-                        <div class="why-box fade-in" style="--delay: 0.1s;">
-                            <h3>High in Protein</h3>
-                            <p>Delivers clean, bioavailable protein to fuel performance and recovery.</p>
-                        </div>
-                        <div class="why-box fade-in" style="--delay: 0.2s;">
-                            <h3>Grass-Fed Quality</h3>
-                            <p>Sourced from organic, grass-fed cattle for purity and sustainability.</p>
-                        </div>
-                    </div>
-                    <div class="why-cta fade-in">
-                        <a href="shop.html" class="button">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="reviews-section-new">
-            <div class="container">
-                <h2 class="section-title">What Our Customers Are Saying</h2>
-                <div class="reviews-grid-new">
-                    <div class="review-card-new fade-in">
-                        <div class="stars">★★★★★</div>
-                        <p>"Incredible flavor and energy. My new go-to bar for workouts."</p>
-                        <div class="review-author">- Alex R.</div>
-                    </div>
-                    <div class="review-card-new fade-in" style="--delay: 0.1s;">
-                        <div class="stars">★★★★★</div>
-                        <p>"Finally, a truly clean protein bar with no junk. You can taste the quality."</p>
-                        <div class="review-author">- Jamie L.</div>
-                    </div>
-                    <div class="review-card-new fade-in" style="--delay: 0.2s;">
-                        <div class="stars">★★★★★</div>
-                        <p>"The beef liver is a game-changer. I feel energized and strong. Highly recommend!"</p>
-                        <div class="review-author">- Morgan P.</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta-section">
-            <div class="container cta-container fade-in">
-                <a href="shop.html" class="button">Try Us Out!</a>
-            </div>
-        </section>
-    </main>
-
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <div class="footer-col">
-            <h4>Quick Links</h4>
-            <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="shop.html">Shop</a></li>
-                <li><a href="ourstory.html">Our Story</a></li>
-                <li><a href="ingredients.html">Ingredients</a></li>
-                <li><a href="contact.html">Contact Us</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Company</h4>
-            <ul>
-                <li><a href="privacy.html">Privacy Policy</a></li>
-                <li><a href="terms.html">Terms of Service</a></li>
-                <li><a href="refund.html">Refund Policy</a></li>
-            </ul>
-        </div>
-        <div class="footer-col subscribe-col">
-            <h4>Subscribe to our Newsletter</h4>
-            <form class="subscribe-form">
-                <input type="email" placeholder="Your email" aria-label="Email" required>
-                <button type="submit" class="button">Subscribe</button>
-            </form>
-            <div class="social-links">
-                <a href="https://www.instagram.com/simplevalleybar?igsh=aTQyenNmenR6eHR5&utm_source=qr" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                </a>
-                <a href="https://www.facebook.com/share/15iTsHbZvu/?mibextid=wwXIfr" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                </a>
-                <a href="https://www.tiktok.com/@simplevalleybar?_t=ZT-90TAgAyyiYh&_r=1" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a4 4 0 1 1-4-4v12a4 4 0 1 1-4-4"></path></svg>
-                </a>
-                <a href="https://www.youtube.com/channel/UC1gO-5Nv1vqAFyLkLshncaQ" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-                </a>
-                <a href="https://x.com/simplevalleybar?s=21" aria-label="X" target="_blank" rel="noopener noreferrer">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </a>
-            </div>
-        </div>
-    </div>
     <div class="container">
-        <p class="copyright-disclaimer">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
-        <p class="copyright">© <span id="year"></span> Simple Valley. All Rights Reserved.</p>
+        <!-- You'll need to provide the path to your logo for this to work -->
+        <!-- For example, if you create an 'img' folder next to this file -->
+        <!-- <div class="logo-circle">
+            <img src="img/RealLogo.png" alt="SV Logo">
+        </div> -->
+        <span class="brand-name">Simple Valley</span>
+        <h1>We're Launching Soon</h1>
+        <p>Our new website is currently under construction. We're working hard to bring you a great experience. Stay tuned!</p>
     </div>
-</footer>
-
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Your Cart</h3>
-            <button class="close-btn" id="close-cart-btn">&times;</button>
-        </div>
-        <div class="cart-body" id="cart-body">
-            <!-- Cart items will be injected here by JavaScript -->
-        </div>
-        <div class="cart-footer">
-            <div class="cart-subtotal">
-                <span>Subtotal</span>
-                <span id="cart-subtotal">$0.00</span>
-            </div>
-            <button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button>
-        </div>
-    </div>
-
-    <script src="assets/js/app.js"></script>
 </body>
 </html>
-
