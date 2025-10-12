@@ -320,7 +320,7 @@ let auth0Client = null;
 const configureClient = async () => {
   auth0Client = await auth0.createAuth0Client({
     domain: 'dev-y6t0um4ltxspelep.us.auth0.com',     // Get this from your Auth0 dashboard
-    clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz', // Get this from your Auth0 dashboard
+    clientId: 'KkYfhFLz9kXkIpXNRepB6TlEdFDNvLnR', // Get this from your Auth0 dashboard
   });
 };
 
