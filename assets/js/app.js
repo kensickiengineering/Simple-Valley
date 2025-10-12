@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkoutButton = document.getElementById('checkout-button');
     // Note: The main Stripe object is no longer needed here for checkout,
     // but it might be useful for other Stripe features (Elements, etc.) later.
-    const stripe = Stripe('pk_test_51SG2EuLSl1NSHnh07iR5vfFbDRUSJbsh53vqHyj0tUzGA0qDHy0IwziAsVNkH97Pp137lJB3u4kKGasoEji0LEVZ00fSiIlSsH'); 
+    const stripe = Stripe('pk_live_51SG2EnLXAfa3XjXDePq1hkToKYm7J1Jq93tUQPi9qqsPuvx2b8dpvfHnZ8rAUNlbIJzSXtdHGjtM240ziknVKnKo001AqpVZoq'); 
 
     let cart = JSON.parse(localStorage.getItem('simpleProteinCart')) || [];
 
@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'The Simple Valley Bar', 
                     price: 39.99,
                     image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SG2SLLSl1NSHnh02hl0ySZi' 
+                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ' 
                 };
                 const qty = parseInt(quantityInput.value) || 1;
                 
