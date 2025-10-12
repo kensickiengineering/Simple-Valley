@@ -6,92 +6,61 @@
     <title>Account | Simple Valley</title>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
     <style>
-        /* Styles to manage the loading/view states */
         #account-view { display: none; }
-        .order-history-section h2 { text-align: center; margin-bottom: 32px; margin-top: 40px;}
+        .order-history-section h2, .settings-section h2 { text-align: center; margin-bottom: 32px; margin-top: 40px;}
         .orders-list { display: flex; flex-direction: column; gap: 16px; }
         .order-item { border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); }
         .order-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; gap: 8px;}
         .order-details { list-style: none; padding-left: 16px; margin: 0; }
-        .order-details li { list-style-type: disc; }
-        #logout-button { background-color: #6B7280; margin-top: 2rem; }
-        #logout-button:hover { background-color: #4B5563; }
         #user-profile { background: var(--background-light); padding: 24px; border-radius: var(--border-radius); }
+        .settings-actions { display: flex; flex-direction: column; gap: 1rem; max-width: 300px; margin: 0 auto; }
+        .settings-actions .button { width: 100%; }
+        #delete-account-btn { background-color: #ef4444; } /* Red for delete */
+        #logout-button {
+            background-color: #e29040;
+            color: #ffffff;
+            margin: 2rem auto 0;
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <div class="promo-banner">
-        <p>ALL PRE-ORDERS SHIP ON NOVEMBER 14. SECURE YOUR BARS TODAY FOR MAXIMAL SAVINGS!</p>
-    </div>
     <header class="site-header">
         <div class="container nav-container">
-            <div class="logo-brand">
-                <a href="home.html" class="logo-circle" aria-label="Home">
-                    <img src="assets/img/RealLogo.png" alt="SV Logo">
-                </a>
-                <a href="home.html" class="brand-name">Simple Valley</a>
             </div>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="ourstory.html">Our Story</a></li>
-                    <li><a href="ingredients.html">Ingredients</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </nav>
-            <div class="nav-meta">
-                <a id="account-link" href="account.html" class="icon-btn" title="Account" aria-label="Account">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                </a>
-                <a href="#" class="icon-btn cart-btn" title="Cart" aria-label="Cart">
-                    <svg xmlns="http://www.w.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-            </div>
-            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
     </header>
 
     <main class="container account-section">
         <h1 class="section-title">Your Account</h1>
         
-        <div id="loading-state">
-            <p>Loading your account...</p>
-        </div>
+        <div id="loading-state"><p>Loading your account...</p></div>
 
         <div id="account-view">
-            <div id="user-profile" style="margin-bottom: 2rem;">
-                </div>
-            
-            <p>From here, you will soon be able to manage your newsletter subscriptions, view past orders, and manage product subscriptions.</p>
+            <div id="user-profile" style="margin-bottom: 2rem;"></div>
 
             <div class="order-history-section">
                 <h2>Your Order History</h2>
-                <div id="order-history-container">
-                    </div>
+                <div id="order-history-container"></div>
+            </div>
+
+            <div class="settings-section">
+                <h2>Account Settings</h2>
+                <div class="settings-actions">
+                    <button id="change-email-btn" class="button">Change Email</button>
+                    <button id="change-password-btn" class="button">Change Password</button>
+                    <button id="delete-account-btn" class="button">Delete Account</button>
+                </div>
             </div>
 
             <button id="logout-button" class="button">Log Out</button>
         </div>
     </main>
-
-    <footer class="site-footer">
-        </footer>
+    
+    <footer class="site-footer"></footer>
     <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        </div>
+    <div class="cart-sidebar" id="cart-sidebar"></div>
 
     <script src="assets/js/app.js"></script>
 </body>

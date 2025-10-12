@@ -441,6 +441,70 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // MODIFICATION: Call the function to get order history
             fetchAndDisplayOrders(); 
+	    // In app.js, inside the updateUI function's "account.html" block...
+// ... after fetchAndDisplayOrders();
+
+// --- NEW: ACCOUNT MANAGEMENT EVENT LISTENERS ---
+const changeEmailBtn = document.getElementById('change-email-btn');
+const changePasswordBtn = document.getElementById('change-password-btn');
+const deleteAccountBtn = document.getElementById('delete-account-btn');
+
+if (changeEmailBtn) {
+    changeEmailBtn.addEventListener('click', async () => {
+        const newEmail = prompt('Please enter your new email address:');
+        if (!newEmail) return;
+
+        try {
+            const user = await auth0Client.getUser();
+            await fetch('/.netlify/functions/manage-user', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'changeEmail', userId: user.sub, newEmail: newEmail }),
+            });
+            alert('Email update request sent! Please check your old and new email inboxes to confirm the change.');
+            // Refresh user profile display
+            profileDiv.innerHTML = `<p><strong>Email:</strong> ${newEmail}</p>`;
+        } catch (error) {
+            console.error('Error changing email:', error);
+            alert('Could not change email. Please try again.');
+        }
+    });
+}
+
+if (changePasswordBtn) {
+    changePasswordBtn.addEventListener('click', async () => {
+        try {
+            const user = await auth0Client.getUser();
+            await fetch('/.netlify/functions/manage-user', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'changePassword', userId: user.sub }),
+            });
+            alert('A password reset link has been sent to your email.');
+        } catch (error) {
+            console.error('Error sending password reset:', error);
+            alert('Could not send password reset link. Please try again.');
+        }
+    });
+}
+
+if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener('click', async () => {
+        if (!confirm('Are you absolutely sure you want to delete your account? This action is irreversible.')) {
+            return;
+        }
+        try {
+            const user = await auth0Client.getUser();
+            await fetch('/.netlify/functions/manage-user', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'deleteAccount', userId: user.sub }),
+            });
+            alert('Your account has been deleted.');
+            logout(); // Log the user out and redirect to home
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            alert('Could not delete account. Please try again.');
+        }
+    });
+}
         }
     };
 
