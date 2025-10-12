@@ -336,11 +336,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// In app.js, inside the `updateUI` function's main `if` block...
 
-// --- New Dropdown Menu Logic ---
+// In app.js, inside the `updateUI` function's main `if` block...
+
+// --- Corrected Dropdown Menu Logic ---
+const settingsMenu = document.querySelector('.settings-menu'); // Define the parent menu
 const settingsBtn = document.getElementById('settings-menu-btn');
 const settingsDropdown = document.getElementById('settings-dropdown-content');
 
-if (settingsBtn && settingsDropdown) {
+if (settingsMenu && settingsBtn && settingsDropdown) {
     settingsBtn.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevents the window click listener from firing immediately
         settingsDropdown.classList.toggle('active');
@@ -348,6 +351,7 @@ if (settingsBtn && settingsDropdown) {
 
     // Close dropdown if user clicks outside of it
     window.addEventListener('click', (e) => {
+        // Check if the click is outside the entire settings menu component
         if (!settingsMenu.contains(e.target)) {
             settingsDropdown.classList.remove('active');
         }
