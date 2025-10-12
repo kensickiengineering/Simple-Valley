@@ -69,19 +69,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkoutButton = document.getElementById('checkout-button');
     const stripe = Stripe('pk_test_51SG2EuLSl1NSHnh07iR5vfFbDRUSJbsh53vqHyj0tUzGA0qDHy0IwziAsVNkH97Pp137lJB3u4kKGasoEji0LEVZ00fSiIlSsH'); 
 
-    let cart = JSON.parse(localStorage.getItem('simpleProteinCart')) || [];
+    let cart = JSON.parse(localStorage.getItem('simpleValleyCart')) || []; // Modified cart name to match business
 
     // --- SELF-HEALING CART VALIDATION ---
     const isCartInvalid = cart.some(item => !item.priceId);
     if (isCartInvalid) {
         console.warn('Invalid cart data detected (missing priceId). Clearing cart.');
         cart = [];
-        localStorage.removeItem('simpleProteinCart');
+        localStorage.removeItem('simpleValleyCart');
     }
     // --- END VALIDATION ---
 
     function saveCart() {
-        localStorage.setItem('simpleProteinCart', JSON.stringify(cart));
+        localStorage.setItem('simpleValleyCart', JSON.stringify(cart));
     }
 
     if (cartSidebar && cartOverlay && closeCartBtn && cartBtns.length > 0) {
@@ -170,18 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (cart[productIndex].qty > 1) {
                     cart[productIndex].qty--;
                 } else {
-                    if (confirm('Are you sure? The Simple Valley bar will be removed from your cart.')) {
-                        cart.splice(productIndex, 1);
-                    } else {
-                        return;
-                    }
+                    cart.splice(productIndex, 1);
                 }
             } else if (action === 'remove') {
-                if (confirm('Are you sure? The Simple Valley bar will be removed from your cart.')) {
-                    cart.splice(productIndex, 1);
-                } else {
-                    return;
-                }
+                cart.splice(productIndex, 1);
             }
 
             saveCart();
@@ -192,316 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartUI();
 
     // --- SHOP PAGE SPECIFIC --- //
-    // This logic runs independently and should not be broken by other changes.
     if (document.querySelector('.shop-layout')) {
         const mainImg = document.getElementById('mainImg');
         const thumbs = document.querySelectorAll('.thumb');
         if (mainImg && thumbs.length > 0) {
-            thumbs.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    thumbs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    mainImg.src = this.querySelector('img').src;
-                });
-            });
-        }
-
-        const decreaseQtyBtn = document.getElementById('decreaseQty');
-        const increaseQtyBtn = document.getElementById('increaseQty');
-        const quantityInput = document.getElementById('quantity');
-        if (decreaseQtyBtn && increaseQtyBtn && quantityInput) {
-            decreaseQtyBtn.addEventListener('click', () => {
-                let currentQty = parseInt(quantityInput.value);
-                if (currentQty > 1) quantityInput.value = currentQty - 1;
-            });
-            increaseQtyBtn.addEventListener('click', () => {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
-            });
-        }
-
-        const addToCartBtn = document.getElementById('addToCartBtn');
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-                const product = { 
-                    id: 'prod_simple_bar_01',
-                    title: 'The Simple Valley Bar', 
-                    price: 39.99,
-                    image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SG2SLLSl1NSHnh02hl0ySZi' 
-                };
-                const qty = parseInt(quantityInput.value) || 1;
-                
-                const existingProduct = cart.find(p => p.id === product.id);
-                if (existingProduct) {
-                    existingProduct.qty += qty;
-                } else {
-                    cart.push({ ...product, qty });
-                }
-                
-                saveCart();
-                updateCartUI();
-                if (cartSidebar) openCart();
-
-                this.textContent = 'Added! ✓';
-                this.classList.add('added');
-                this.disabled = true;
-
-                setTimeout(() => {
-                    this.textContent = 'Add to Cart';
-                    this.classList.remove('added');
-                    this.disabled = false;
-                }, 2000);
-            });
-        }
-    }
-    
-    // --- INGREDIENTS PAGE SPECIFIC --- //
-    if (document.querySelector('.ingredients-grid')) {
-        const ingredientCards = document.querySelectorAll('.ingredient-card');
-        ingredientCards.forEach(card => {
-            const header = card.querySelector('.ingredient-header');
-            if (header) {
-                header.addEventListener('click', () => {
-                    card.classList.toggle('active');
-                    const content = card.querySelector('.ingredient-desc');
-                    if(content){
-                        if(card.classList.contains('active')){
-                           content.style.maxHeight = content.scrollHeight + 'px';
-                        } else {
-                           content.style.maxHeight = null;
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    // --- STRIPE CHECKOUT LOGIC (FOR NETLIFY FUNCTIONS) --- //
-    if (checkoutButton) {
-        // MODIFICATION: Made the function async to use 'await'
-        checkoutButton.addEventListener('click', async function() {
-            if (cart.length === 0) return;
-    
-            checkoutButton.disabled = true;
-            checkoutButton.textContent = 'Processing...';
-    
-            // NEW: Check if the user is authenticated and get their email
-            const isAuthenticated = await auth0Client.isAuthenticated();
-            let userEmail = null;
-    
-            if (isAuthenticated) {
-                const user = await auth0Client.getUser();
-                userEmail = user.email;
-            }
-    
-            // Call our Netlify Function.
-            fetch('/.netlify/functions/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                // MODIFICATION: Send the cart AND the user's email
-                body: JSON.stringify({ cart: cart, userEmail: userEmail }),
-            })
-            .then(res => {
-                if (res.ok) return res.json();
-                return res.json().then(json => Promise.reject(json));
-            })
-            .then(({ url }) => {
-                window.location = url;
-            })
-            .catch(e => {
-                console.error(e.error);
-                alert('An error occurred during checkout. Please try again.');
-                checkoutButton.disabled = false;
-                checkoutButton.textContent = 'Proceed to Checkout';
-            });
-        });
-    }
-
-    // --- AUTH0 USER AUTHENTICATION LOGIC --- //
-
-    let auth0Client = null;
-
-    // Initialize Auth0 client
-    const configureClient = async () => {
-        auth0Client = await auth0.createAuth0Client({
-            domain: 'login.simplevalleybar.com',
-            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
-            authorizationParams: {
-                redirect_uri: window.location.origin + '/account.html'
-            }
-        });
-    };
-
-    // Handle login
-    const login = async () => {
-        await auth0Client.loginWithRedirect({
-            authorizationParams: {
-                redirect_uri: window.location.origin + '/account.html'
-            }
-        });
-    };
-
-    // Handle logout
-    const logout = async () => {
-        await auth0Client.logout({
-            logoutParams: {
-                returnTo: window.location.origin
-            }
-        });
-    };
-
-    // NEW: Function to fetch and display past orders
-    async function fetchAndDisplayOrders() {
-        const container = document.getElementById('order-history-container');
-        if (!container) return;
-    
-        try {
-            const isAuthenticated = await auth0Client.isAuthenticated();
-            if (!isAuthenticated) {
-                container.innerHTML = '<p>Please log in to see your orders.</p>';
-                return;
-            }
-    
-            const user = await auth0Client.getUser();
-            const response = await fetch('/.netlify/functions/get-order-history', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user: user })
-            });
-    
-            if (!response.ok) {
-                throw new Error('Failed to load orders.');
-            }
-    
-            const orders = await response.json();
-    
-            if (orders.length === 0) {
-                container.innerHTML = '<p>You have not made any orders yet.</p>';
-                return;
-            }
-    
-            let ordersHtml = '<div class="orders-list">';
-            orders.forEach(order => {
-                ordersHtml += `
-                    <div class="order-item">
-                        <div class="order-summary">
-                            <span class="order-date"><strong>Date:</strong> ${order.date}</span>
-                            <span class="order-total"><strong>Total:</strong> ${order.total}</span>
-                        </div>
-                        <ul class="order-details">
-                            ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-                        </ul>
-                    </div>
-                `;
-            });
-            ordersHtml += '</div>';
-            container.innerHTML = ordersHtml;
-    
-        } catch (error) {
-            console.error('Order fetch error:', error);
-            container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
-        }
-    }
-
-    // Update navigation & account UI
-    const updateUI = async () => {
-        const isAuthenticated = await auth0Client.isAuthenticated();
-        const accountLink = document.getElementById('account-link');
-    
-        if (!accountLink) return;
-    
-        if (!isAuthenticated) {
-            accountLink.onclick = (e) => {
-                e.preventDefault();
-                login();
-            };
-        } else {
-            accountLink.onclick = null;
-            accountLink.href = '/account.html';
-        }
-    
-        if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
-            const user = await auth0Client.getUser();
-            const profileDiv = document.getElementById('user-profile');
-            if (profileDiv) {
-                profileDiv.innerHTML = `
-                    <h3>Welcome back!</h3>
-                    <p><strong>Email:</strong> ${user.email}</p>
-                    <p>Your details will be pre-filled for checkout.</p>
-                `;
-            }
-    
-            document.getElementById('loading-state').style.display = 'none';
-            document.getElementById('account-view').style.display = 'block';
-    
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) logoutButton.onclick = logout;
-
-            // MODIFICATION: Call the function to get order history
-            fetchAndDisplayOrders(); 
-	    // In app.js, inside the updateUI function's `if` block...
-
-// Add event listeners for new account settings
-const changeEmailBtn = document.getElementById('change-email-btn');
-const resetPasswordBtn = document.getElementById('reset-password-btn');
-const deleteAccountBtn = document.getElementById('delete-account-btn');
-
-if (changeEmailBtn) {
-    changeEmailBtn.addEventListener('click', async () => {
-        const newEmail = prompt('Please enter your new email address:');
-        if (newEmail) {
-            try {
-                const user = await auth0Client.getUser();
-                const response = await fetch('/.netlify/functions/update-user-email', {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: user.sub, newEmail: newEmail })
-                });
-                if (!response.ok) throw new Error('Failed to update email.');
-                alert('Email updated successfully! Please check your inbox to verify your new email.');
-                // Update UI display
-                document.querySelector('#user-profile p strong').nextSibling.textContent = ` ${newEmail}`;
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-            }
-        }
-    });
-}
-
-if (resetPasswordBtn) {
-    resetPasswordBtn.addEventListener('click', async () => {
-        try {
-            const user = await auth0Client.getUser();
-            const response = await fetch('/.netlify/functions/reset-user-password', {
-                method: 'POST',
-                body: JSON.stringify({ email: user.email })
-            });
-            if (!response.ok) throw new Error('Failed to send reset link.');
-            alert('A password reset link has been sent to your email address.');
-        } catch (error) {
-            alert('An error occurred. Please try again.');
-        }
-    });
-}
-
-if (deleteAccountBtn) {
-    deleteAccountBtn.addEventListener('click', async () => {
-        if (confirm('Are you sure you want to delete your account? This action is permanent and cannot be undone.')) {
-            try {
-                const user = await auth0Client.getUser();
-                const response = await fetch('/.netlify/functions/delete-user-account', {
-                    method: 'POST',
-                    body: JSON.stringify({ userId: user.sub })
-                });
-                if (!response.ok) throw new Error('Failed to delete account.');
-                alert('Your account has been successfully deleted.');
-                logout(); // Log out and redirect
-            } catch (error) {
-                alert('An error occurred. Please try again.');
-            }
-        }
-    });
-}
-
-});
+            thumbs.
