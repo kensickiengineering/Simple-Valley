@@ -339,6 +339,15 @@ document.addEventListener('DOMContentLoaded', function() {
 // In app.js, inside the `updateUI` function's main `if` block...
 
 // --- Corrected Dropdown Menu Logic ---
+const connection = user?.identities?.[0]?.connection;
+
+if (connection === "Username-Password-Authentication") {
+  document.getElementById("reset-btn").style.display = "block";
+} else {
+  document.getElementById("reset-note").innerText =
+    "You sign in with Google — manage your password in your Google account.";
+}
+
 const settingsMenu = document.querySelector('.settings-menu'); // Define the parent menu
 const settingsBtn = document.getElementById('settings-menu-btn');
 const settingsDropdown = document.getElementById('settings-dropdown-content');
