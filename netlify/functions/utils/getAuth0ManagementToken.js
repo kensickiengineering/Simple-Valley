@@ -10,7 +10,7 @@ module.exports = async () => {
     const response = await axios.post(`https://${domain}/oauth/token`, {
       client_id: clientId,
       client_secret: clientSecret,
-      audience: `https://${domain}/api/v2/`,
+      audience: `https://${login.simplevalleybar.com}/api/v2/`,
       grant_type: 'client_credentials',
     });
     return response.data.access_token;
