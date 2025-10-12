@@ -139,60 +139,7 @@
     </div>
 
     <script src="assets/js/app.js"></script>
-<script src="assets/js/app.js"></script> <script>
-    // This is the page-specific logic for account.html
-    let auth0Client = null;
 
-    const configureClient = async () => {
-      auth0Client = await auth0.createAuth0Client({
-        domain: 'YOUR_AUTH0_DOMAIN',     // IMPORTANT: Replace with your value
-        clientId: 'YOUR_AUTH0_CLIENT_ID' // IMPORTANT: Replace with your value
-      });
-    };
-
-    const updateAccountUI = async () => {
-        const isAuthenticated = await auth0Client.isAuthenticated();
-
-        if (!isAuthenticated) {
-            // If the user isn't logged in, trigger the login flow.
-            // After login, they will be returned to this account page.
-            await auth0Client.loginWithRedirect({
-                authorizationParams: {
-                    redirect_uri: window.location.href
-                }
-            });
-        } else {
-            // If the user is logged in, show their info.
-            const user = await auth0Client.getUser();
-            const userProfileDiv = document.getElementById('user-profile');
-            
-            userProfileDiv.innerHTML = `
-                <h3>Welcome Back!</h3>
-                <p><strong>Email:</strong> ${user.email}</p>
-                <p>Your details will now be pre-filled for a faster checkout experience.</p>
-            `;
-
-            // Show the account content and hide the loading message
-            document.getElementById('loading-state').style.display = 'none';
-            document.getElementById('account-view').style.display = 'block';
-
-            // Set up the logout button's functionality
-            document.getElementById('logout-button').addEventListener('click', () => {
-                auth0Client.logout({
-                    logoutParams: {
-                        returnTo: window.location.origin // Return to the homepage after logout
-                    }
-                });
-            });
-        }
-    };
-
-    // Main function to run when the page loads
-    window.addEventListener('load', async () => {
-        await configureClient();
-        await updateAccountUI();
-    });
-</script>
 </body>
 </html>
 

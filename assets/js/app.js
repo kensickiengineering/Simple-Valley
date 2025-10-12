@@ -316,57 +316,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
 let auth0Client = null;
 
-// This function initializes the Auth0 client
+// Initialize Auth0 client
 const configureClient = async () => {
   auth0Client = await auth0.createAuth0Client({
-    domain: 'dev-y6t0um4ltxspelep.us.auth0.com',     // Get this from your Auth0 dashboard
-    clientId: 'KkYfhFLz9kXkIpXNRepB6TlEdFDNvLnR', // Get this from your Auth0 dashboard
+    domain: 'dev-y6t0um4ltxspelep.us.auth0.com',     // Your Auth0 domain
+    clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',    // Your Auth0 client ID
+    authorizationParams: {
+      redirect_uri: window.location.origin + '/account.html'
+    }
   });
 };
 
-// This function updates the UI based on login status
+// Handle login
+const login = async () => {
+  await auth0Client.loginWithRedirect({
+    authorizationParams: {
+      redirect_uri: window.location.origin + '/account.html'
+    }
+  });
+};
+
+// Handle logout
+const logout = async () => {
+  await auth0Client.logout({
+    logoutParams: {
+      returnTo: window.location.origin
+    }
+  });
+};
+
+// Update navigation & account UI
 const updateUI = async () => {
   const isAuthenticated = await auth0Client.isAuthenticated();
   const accountLink = document.getElementById('account-link');
 
   if (!accountLink) return;
 
-  if (isAuthenticated) {
-    // User is logged in, so the link should work normally.
-    // We clear any special click behavior we might have added.
-    accountLink.onclick = null;
-    accountLink.href = '/account.html'; // Ensure it points to the account page
-  } else {
-    // User is logged out. We prevent the link from navigating...
+  if (!isAuthenticated) {
+    // Logged out: clicking the user icon triggers login
     accountLink.onclick = (e) => {
       e.preventDefault();
-      // ...and trigger the login flow instead.
       login();
     };
+  } else {
+    // Logged in: clicking the icon goes to the account page
+    accountLink.onclick = null;
+    accountLink.href = '/account.html';
+  }
+
+  // If we're on account.html, show profile info
+  if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
+    const user = await auth0Client.getUser();
+    const profileDiv = document.getElementById('user-profile');
+    if (profileDiv) {
+      profileDiv.innerHTML = `
+        <h3>Welcome back!</h3>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p>Your details will be pre-filled for checkout.</p>
+      `;
+    }
+
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('account-view').style.display = 'block';
+
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) logoutButton.onclick = logout;
   }
 };
 
-// This function handles the login process
-const login = async () => {
-  await auth0Client.loginWithRedirect({
-    authorizationParams: {
-      redirect_uri: window.location.href // Return to the current page after login
-    }
-  });
-};
-
-// Main function to run when the page loads
+// Main flow
 window.addEventListener('load', async () => {
   await configureClient();
-  updateUI();
 
-  // This handles the redirect back from Auth0 after a user logs in
+  // Handle redirect after Auth0 login
   const query = window.location.search;
-  if (query.includes("code=") && query.includes("state=")) {
+  if (query.includes('code=') && query.includes('state=')) {
     await auth0Client.handleRedirectCallback();
-    updateUI();
-    // Clean up the URL
-    window.history.replaceState({}, document.title, window.location.pathname);
+    window.history.replaceState({}, document.title, '/account.html');
   }
+
+  updateUI();
 });
+
 });
