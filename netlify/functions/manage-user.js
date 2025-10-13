@@ -2,15 +2,20 @@
 require('dotenv').config();
 const axios = require('axios');
 
-// Helper function to get a Management API token
+// Helper function to get a Management API token from Auth0
 const getManagementApiToken = async () => {
-  const response = await axios.post(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
-    client_id: process.env.AUTH0_MGMT_CLIENT_ID,
-    client_secret: process.env.AUTH0_MGMT_CLIENT_SECRET,
-    audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
-    grant_type: 'client_credentials',
-  });
-  return response.data.access_token;
+  try {
+    const response = await axios.post(`https://${process.env.AUTH0_DOMAIN}/oauth/token`, {
+      client_id: process.env.AUTH0_MGMT_CLIENT_ID,
+      client_secret: process.env.AUTH0_MGMT_CLIENT_SECRET,
+      audience: `https://${process.env.AUTH0_DOMAIN}/api/v2/`,
+      grant_type: 'client_credentials',
+    });
+    return response.data.access_token;
+  } catch (error) {
+    console.error('Error getting Management API token:', error);
+    throw new Error('Could not retrieve management token.');
+  }
 };
 
 exports.handler = async (event) => {
@@ -20,26 +25,38 @@ exports.handler = async (event) => {
 
   try {
     const { action, userId, newEmail } = JSON.parse(event.body);
+    if (!action || !userId) {
+        return { statusCode: 400, body: JSON.stringify({ error: 'Action and User ID are required.' }) };
+    }
+
     const mgmtToken = await getManagementApiToken();
     const auth0ApiUrl = `https://${process.env.AUTH0_DOMAIN}/api/v2`;
 
     switch (action) {
       case 'changeEmail':
-        if (!newEmail) return { statusCode: 400, body: JSON.stringify({ error: 'New email is required.' }) };
-        await axios.patch(`${auth0ApiUrl}/users/${userId}`, { email: newEmail }, {
+        if (!newEmail) {
+            return { statusCode: 400, body: JSON.stringify({ error: 'New email is required.' }) };
+        }
+        await axios.patch(`${auth0ApiUrl}/users/${userId}`, { 
+            email: newEmail,
+            email_verified: false // User must re-verify their new email
+        }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
-        return { statusCode: 200, body: JSON.stringify({ message: 'Email updated successfully.' }) };
+        return { statusCode: 200, body: JSON.stringify({ message: 'Email update process initiated.' }) };
 
       case 'changePassword':
+        // First, get the user's email and primary connection from Auth0
         const userResponse = await axios.get(`${auth0ApiUrl}/users/${userId}`, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
         const userEmail = userResponse.data.email;
+        const connectionId = userResponse.data.identities[0].connection;
         
+        // Create a password change ticket
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
           email: userEmail,
-          connection_id: userResponse.data.identities[0].connection,
+          connection_id: connectionId, // Use the user's actual connection ID
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
@@ -52,10 +69,10 @@ exports.handler = async (event) => {
         return { statusCode: 200, body: JSON.stringify({ message: 'Account deleted successfully.' }) };
 
       default:
-        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action.' }) };
+        return { statusCode: 400, body: JSON.stringify({ error: 'Invalid action specified.' }) };
     }
   } catch (error) {
     console.error('Error in manage-user function:', error.response ? error.response.data : error.message);
-    return { statusCode: 500, body: JSON.stringify({ error: 'An internal error occurred.' }) };
+    return { statusCode: 500, body: JSON.stringify({ error: 'An internal server error occurred.' }) };
   }
 };

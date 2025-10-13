@@ -28,39 +28,29 @@ document.addEventListener('DOMContentLoaded', function() {
         fadeInElements.forEach(element => observer.observe(element));
     }
 
-    // --- ACCORDION LOGIC --- //
-    const accordionItems = document.querySelectorAll('.accordion-item');
-    if (accordionItems.length > 0) {
-        accordionItems.forEach(item => {
-            const header = item.querySelector('.accordion-header');
-            if (header) {
-                header.addEventListener('click', () => {
-                    const content = item.querySelector('.accordion-content');
-                    item.classList.toggle('active');
-                    if (item.classList.contains('active')) {
-                        content.style.maxHeight = content.scrollHeight + 'px';
-                    } else {
-                        content.style.maxHeight = null;
-                    }
-                });
-            }
-        });
-        const firstActive = document.querySelector('.accordion-item.active .accordion-content');
-        if(firstActive) firstActive.style.maxHeight = firstActive.scrollHeight + 'px';
+    // --- INGREDIENTS & FAQ ACCORDION LOGIC --- //
+    function initializeAccordion(selector, headerClass, contentClass) {
+        const items = document.querySelectorAll(selector);
+        if (items.length > 0) {
+            items.forEach(item => {
+                const header = item.querySelector(headerClass);
+                if (header) {
+                    header.addEventListener('click', () => {
+                        item.classList.toggle('active');
+                        const content = item.querySelector(contentClass);
+                        if (content && item.classList.contains('active')) {
+                            content.style.maxHeight = content.scrollHeight + 'px';
+                        } else if (content) {
+                            content.style.maxHeight = null;
+                        }
+                    });
+                }
+            });
+        }
     }
-
-    // --- INGREDIENTS PAGE ACCORDION --- //
-    const ingredientCards = document.querySelectorAll('.ingredient-card');
-    if (ingredientCards.length > 0) {
-        ingredientCards.forEach(card => {
-            const header = card.querySelector('.ingredient-header');
-            if (header) {
-                header.addEventListener('click', () => {
-                    card.classList.toggle('active');
-                });
-            }
-        });
-    }
+    initializeAccordion('.accordion-item', '.accordion-header', '.accordion-content');
+    initializeAccordion('.ingredient-card', '.ingredient-header', '.ingredient-desc');
+    
 
     // --- CART & E-COMMERCE LOGIC --- //
     const cartSidebar = document.getElementById('cart-sidebar');
@@ -321,109 +311,111 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // --- MAIN UI UPDATE FUNCTION --- //
     const updateUI = async () => {
         const isAuthenticated = await auth0Client.isAuthenticated();
         const accountLink = document.getElementById('account-link');
     
         if (accountLink) {
             accountLink.href = isAuthenticated ? '/account.html' : '#';
-            accountLink.onclick = isAuthenticated ? null : (e) => { e.preventDefault(); login(); };
+            if (!isAuthenticated) {
+                accountLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    login();
+                });
+            }
         }
     
-        if (window.location.pathname.endsWith('account.html') && isAuthenticated) {
-            const user = await auth0Client.getUser();
-            const profileDiv = document.getElementById('user-profile');
-            if (profileDiv) {
-                profileDiv.innerHTML = `<h3>Welcome back!</h3><p><strong>Email:</strong> ${user.email}</p>`;
+        // Only run account-specific logic on the account page
+        if (window.location.pathname.endsWith('account.html')) {
+            if (!isAuthenticated) {
+                // If not logged in, redirect to home or show login prompt
+                window.location.pathname = '/';
+                return;
             }
+
+            const user = await auth0Client.getUser();
             
-            const loadingState = document.getElementById('loading-state');
-            const accountView = document.getElementById('account-view');
-            if(loadingState) loadingState.style.display = 'none';
-            if(accountView) accountView.style.display = 'block';
-    
-            const logoutButton = document.getElementById('logout-button');
-            if (logoutButton) logoutButton.onclick = logout;
+            // --- Show main account view --- //
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('account-view').style.display = 'block';
+            document.getElementById('user-profile').innerHTML = `<h3>Welcome back!</h3><p><strong>Email:</strong> ${user.email}</p>`;
+            document.getElementById('logout-button').addEventListener('click', logout);
 
             await fetchAndDisplayOrders();
 
-		// In app.js, inside the `updateUI` function's main `if` block...
+            // --- Settings Dropdown Logic --- //
+            const settingsBtn = document.getElementById('settings-menu-btn');
+            const settingsDropdown = document.getElementById('settings-dropdown-content');
+            const changeEmailBtn = document.getElementById('change-email-btn');
+            const passwordSection = document.getElementById('password-section');
+            const deleteAccountBtn = document.getElementById('delete-account-btn');
 
-// In app.js, inside the `updateUI` function's main `if` block...
-
-document.addEventListener("DOMContentLoaded", () => {
-  const connection = user?.identities?.[0]?.connection;
-
-  const resetBtn = document.getElementById("reset-btn");
-  const resetNote = document.getElementById("reset-note");
-
-  // --- Show/hide Change Password depending on connection ---
-  if (resetBtn && resetNote) {
-    if (connection === "Username-Password-Authentication") {
-      resetBtn.style.display = "block";
-      resetNote.style.display = "none";
-    } else {
-      resetBtn.style.display = "none";
-      resetNote.style.display = "block";
-      resetNote.innerText =
-        "You sign in with Google — manage your password in your Google account.";
-    }
-  }
-
-  // --- Dropdown menu logic ---
-  const settingsMenu = document.querySelector(".settings-menu");
-  const settingsBtn = document.getElementById("settings-menu-btn");
-  const settingsDropdown = document.getElementById("settings-dropdown-content");
-
-  if (settingsMenu && settingsBtn && settingsDropdown) {
-    settingsBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      settingsDropdown.classList.toggle("active");
-    });
-
-    window.addEventListener("click", (e) => {
-      if (!settingsMenu.contains(e.target)) {
-        settingsDropdown.classList.remove("active");
-      }
-    });
-  }
-});
-
-
-            // --- Account Settings Event Listeners ---
-            document.getElementById('change-email-btn')?.addEventListener('click', async () => {
-                const newEmail = prompt('Please enter your new email address:');
-                if (newEmail) {
-                    try {
-                        const response = await fetch('/.netlify/functions/update-user-email', {
-                            method: 'POST',
-                            body: JSON.stringify({ userId: user.sub, newEmail })
-                        });
-                        if (!response.ok) throw new Error(await response.text());
-                        alert('Please check your inbox to verify your new email.');
-                        profileDiv.querySelector('p').innerHTML = `<strong>Email:</strong> ${newEmail}`;
-                    } catch (error) { console.error(error); alert('An error occurred.'); }
+            // Toggle dropdown visibility
+            settingsBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                settingsDropdown.classList.toggle('active');
+            });
+            window.addEventListener('click', () => {
+                if (settingsDropdown.classList.contains('active')) {
+                    settingsDropdown.classList.remove('active');
                 }
             });
 
-            document.getElementById('reset-password-btn')?.addEventListener('click', async () => {
+            // Check connection type to show/hide relevant buttons
+            const isPasswordUser = user.sub.startsWith('auth0|');
+            if (isPasswordUser) {
+                changeEmailBtn.style.display = 'block';
+                passwordSection.style.display = 'block';
+            } else {
+                changeEmailBtn.style.display = 'none';
+                passwordSection.style.display = 'none';
+            }
+
+            // --- Event Listeners for Settings Actions --- //
+            async function handleUserAction(action, payload) {
                 try {
-                    await fetch('/.netlify/functions/reset-user-password', {
-                        method: 'POST', body: JSON.stringify({ email: user.email })
+                    const response = await fetch('/.netlify/functions/manage-user', {
+                        method: 'POST',
+                        body: JSON.stringify({ action, userId: user.sub, ...payload })
                     });
-                    alert('A password reset link has been sent to your email.');
-                } catch (error) { console.error(error); alert('An error occurred.'); }
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || 'Something went wrong.');
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error(`Error with action '${action}':`, error);
+                    alert(`Error: ${error.message}`);
+                    return null;
+                }
+            }
+
+            changeEmailBtn.addEventListener('click', async () => {
+                const newEmail = prompt('Please enter your new email address:');
+                if (newEmail) {
+                    const result = await handleUserAction('changeEmail', { newEmail });
+                    if (result) {
+                        alert('Please check your inbox to verify your new email.');
+                        document.querySelector('#user-profile p').innerHTML = `<strong>Email:</strong> ${newEmail}`;
+                    }
+                }
             });
 
-            document.getElementById('delete-account-btn')?.addEventListener('click', async () => {
-                if (confirm('Are you sure? This action is permanent.')) {
-                    try {
-                        await fetch('/.netlify/functions/delete-user-account', {
-                            method: 'POST', body: JSON.stringify({ userId: user.sub })
-                        });
+            document.getElementById('reset-btn').addEventListener('click', async () => {
+                const result = await handleUserAction('changePassword');
+                if (result) {
+                    alert('A password reset link has been sent to your email.');
+                }
+            });
+
+            deleteAccountBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to delete your account? This action is permanent.')) {
+                    const result = await handleUserAction('deleteAccount');
+                    if (result) {
                         alert('Your account has been deleted.');
                         logout();
-                    } catch (error) { console.error(error); alert('An error occurred.'); }
+                    }
                 }
             });
         }
@@ -432,14 +424,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Main initialization flow
     window.addEventListener('load', async () => {
         await configureClient();
-        if (!auth0Client) return;
+        if (!auth0Client) {
+            console.error("Auth0 client failed to initialize.");
+            return;
+        };
 
         const query = window.location.search;
         if (query.includes('code=') && query.includes('state=')) {
-            await auth0Client.handleRedirectCallback();
-            window.history.replaceState({}, document.title, '/account.html');
+            try {
+                await auth0Client.handleRedirectCallback();
+                window.history.replaceState({}, document.title, '/account.html');
+            } catch(e) {
+                console.error("Error handling redirect callback:", e);
+            }
         }
         await updateUI();
     });
-
 });
