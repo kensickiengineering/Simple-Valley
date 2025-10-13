@@ -39,23 +39,23 @@ exports.handler = async (event) => {
         }
         await axios.patch(`${auth0ApiUrl}/users/${userId}`, { 
             email: newEmail,
-            email_verified: false // User must re-verify their new email
+            verify_email: true, // This should be true to send a verification link
+            client_id: process.env.AUTH0_CLIENT_ID, // Add client_id to generate the correct verification link
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
         return { statusCode: 200, body: JSON.stringify({ message: 'Email update process initiated.' }) };
 
       case 'changePassword':
-        // Get the user's email from Auth0
         const userResponse = await axios.get(`${auth0ApiUrl}/users/${userId}`, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
         const userEmail = userResponse.data.email;
         
-        // Create a password change ticket using the specific DB connection ID
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
           email: userEmail,
-          connection_id: process.env.AUTH0_DB_CONNECTION_ID, // Use the ID from .env
+          connection_id: process.env.AUTH0_DB_CONNECTION_ID,
+          result_url: `${process.env.URL}/account.html`, // Explicitly set the redirect URL
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
