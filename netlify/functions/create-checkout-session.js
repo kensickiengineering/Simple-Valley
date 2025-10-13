@@ -22,12 +22,11 @@ exports.handler = async (event) => {
   
   const stripe = require('stripe')(stripeSecretKey);
   
-  try {
-    const { cart, userEmail } = JSON.parse(event.body);
+  // Replace the try...catch block in create-checkout-session.js with this
 
-    // --- START: NEW DIAGNOSTIC LOG ---
+try {
+    const { cart, userEmail } = JSON.parse(event.body);
     console.log("Successfully parsed body. Cart items:", cart, "User Email:", userEmail);
-    // --- END: NEW DIAGNOSTIC LOG ---
 
     if (!cart || cart.length === 0) {
       console.error("Validation Error: Cart is empty or missing.");
@@ -55,7 +54,9 @@ exports.handler = async (event) => {
       console.log("Stripe Customer ID:", customerId);
     }
 
-    const session = await stripe.checkout.sessions.create({
+    // --- START: CORRECTED LOGIC ---
+    // Build the session payload object dynamically
+    const sessionPayload = {
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',
@@ -64,19 +65,23 @@ exports.handler = async (event) => {
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
       },
-      customer: customerId,
-      customer_email: customerId ? undefined : userEmail,
-    });
+    };
+
+    // Only add the 'customer' property if a customerId exists.
+    if (customerId) {
+      sessionPayload.customer = customerId;
+    }
+    // --- END: CORRECTED LOGIC ---
+
+    const session = await stripe.checkout.sessions.create(sessionPayload);
 
     return {
       statusCode: 200,
       body: JSON.stringify({ url: session.url }),
     };
   } catch (e) {
-    // --- START: ENHANCED ERROR LOGGING ---
     console.error("--- AN ERROR OCCURRED ---");
     console.error("Error parsing JSON or with Stripe API:", e);
-    // --- END: ENHANCED ERROR LOGGING ---
     return {
       statusCode: 400,
       body: JSON.stringify({ error: `Stripe Error: ${e.message}` }),
