@@ -47,15 +47,9 @@ exports.handler = async (event) => {
         return { statusCode: 200, body: JSON.stringify({ message: 'Email update process initiated.' }) };
 
       case 'changePassword':
-        const userResponse = await axios.get(`${auth0ApiUrl}/users/${userId}`, {
-          headers: { Authorization: `Bearer ${mgmtToken}` },
-        });
-        const userEmail = userResponse.data.email;
-        
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
-          email: userEmail,
-          connection_id: process.env.AUTH0_DB_CONNECTION_ID,
-          client_id: process.env.AUTH0_CLIENT_ID // Specifies WHICH application is making the request
+          user_id: userId,
+          client_id: process.env.AUTH0_CLIENT_ID
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
