@@ -55,7 +55,6 @@ exports.handler = async (event) => {
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
           email: userEmail,
           connection_id: process.env.AUTH0_DB_CONNECTION_ID,
-          result_url: `${process.env.URL}/account.html`,
           client_id: process.env.AUTH0_CLIENT_ID // Specifies WHICH application is making the request
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
