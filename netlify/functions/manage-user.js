@@ -13,7 +13,7 @@ const getManagementApiToken = async () => {
     });
     return response.data.access_token;
   } catch (error) {
-    console.error('Error getting Management API token:', error);
+    console.error('Error getting Management API token:', error.response ? error.response.data : error.message);
     throw new Error('Could not retrieve management token.');
   }
 };
@@ -39,8 +39,8 @@ exports.handler = async (event) => {
         }
         await axios.patch(`${auth0ApiUrl}/users/${userId}`, { 
             email: newEmail,
-            verify_email: true, // This should be true to send a verification link
-            client_id: process.env.AUTH0_CLIENT_ID, // Add client_id to generate the correct verification link
+            verify_email: true, // Tells Auth0 to kick off the verification flow
+            client_id: process.env.AUTH0_CLIENT_ID // Specifies WHICH application is making the request
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
