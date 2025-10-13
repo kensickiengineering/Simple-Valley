@@ -4,8 +4,14 @@ require('dotenv').config();
 exports.handler = async (event) => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-  // --- START: DIAGNOSTIC CHECK ---
+  // --- START: NEW DIAGNOSTIC LOGS ---
+  console.log("--- create-checkout-session function triggered ---");
+  console.log("Stripe Secret Key Loaded:", !!stripeSecretKey); // This will be true or false
+  console.log("Raw incoming event body:", event.body);
+  // --- END: NEW DIAGNOSTIC LOGS ---
+
   if (!stripeSecretKey) {
+    console.error("CRITICAL: STRIPE_SECRET_KEY is not defined.");
     return {
       statusCode: 500,
       body: JSON.stringify({
@@ -13,13 +19,23 @@ exports.handler = async (event) => {
       }),
     };
   }
-  // --- END: DIAGNOSTIC CHECK ---
-
+  
   const stripe = require('stripe')(stripeSecretKey);
   
   try {
-    // 1. Destructure cart AND userEmail from the request body
     const { cart, userEmail } = JSON.parse(event.body);
+
+    // --- START: NEW DIAGNOSTIC LOG ---
+    console.log("Successfully parsed body. Cart items:", cart, "User Email:", userEmail);
+    // --- END: NEW DIAGNOSTIC LOG ---
+
+    if (!cart || cart.length === 0) {
+      console.error("Validation Error: Cart is empty or missing.");
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Cart cannot be empty." }),
+      };
+    }
 
     const line_items = cart.map(item => ({
       price: item.priceId,
@@ -28,18 +44,15 @@ exports.handler = async (event) => {
 
     let customerId = null;
 
-    // 2. If a user is logged in (userEmail is provided), find or create a customer
     if (userEmail) {
       const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
-      
       if (customers.data.length > 0) {
-        // Customer already exists in Stripe
         customerId = customers.data[0].id;
       } else {
-        // New user, so create a new customer in Stripe
         const newCustomer = await stripe.customers.create({ email: userEmail });
         customerId = newCustomer.id;
       }
+      console.log("Stripe Customer ID:", customerId);
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -51,9 +64,7 @@ exports.handler = async (event) => {
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
       },
-      // 3. Associate the session with the Stripe Customer ID
       customer: customerId,
-      // If the customer is new, this pre-fills their email on the checkout page
       customer_email: customerId ? undefined : userEmail,
     });
 
@@ -62,6 +73,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({ url: session.url }),
     };
   } catch (e) {
+    // --- START: ENHANCED ERROR LOGGING ---
+    console.error("--- AN ERROR OCCURRED ---");
+    console.error("Error parsing JSON or with Stripe API:", e);
+    // --- END: ENHANCED ERROR LOGGING ---
     return {
       statusCode: 400,
       body: JSON.stringify({ error: `Stripe Error: ${e.message}` }),
