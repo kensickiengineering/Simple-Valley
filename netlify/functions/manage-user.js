@@ -39,8 +39,8 @@ exports.handler = async (event) => {
         }
         await axios.patch(`${auth0ApiUrl}/users/${userId}`, { 
             email: newEmail,
-            verify_email: true, // Tells Auth0 to kick off the verification flow
-            client_id: process.env.AUTH0_CLIENT_ID // Specifies WHICH application is making the request
+            verify_email: true,
+            client_id: process.env.AUTH0_CLIENT_ID
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
@@ -55,7 +55,8 @@ exports.handler = async (event) => {
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
           email: userEmail,
           connection_id: process.env.AUTH0_DB_CONNECTION_ID,
-          result_url: `${process.env.URL}/account.html`, // Explicitly set the redirect URL
+          result_url: `${process.env.URL}/account.html`,
+          client_id: process.env.AUTH0_CLIENT_ID // Specifies WHICH application is making the request
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
