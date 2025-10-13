@@ -46,17 +46,16 @@ exports.handler = async (event) => {
         return { statusCode: 200, body: JSON.stringify({ message: 'Email update process initiated.' }) };
 
       case 'changePassword':
-        // First, get the user's email and primary connection from Auth0
+        // Get the user's email from Auth0
         const userResponse = await axios.get(`${auth0ApiUrl}/users/${userId}`, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
         const userEmail = userResponse.data.email;
-        const connectionId = userResponse.data.identities[0].connection;
         
-        // Create a password change ticket
+        // Create a password change ticket using the specific DB connection ID
         await axios.post(`${auth0ApiUrl}/tickets/password-change`, {
           email: userEmail,
-          connection_id: connectionId, // Use the user's actual connection ID
+          connection_id: process.env.AUTH0_DB_CONNECTION_ID, // Use the ID from .env
         }, {
           headers: { Authorization: `Bearer ${mgmtToken}` },
         });
