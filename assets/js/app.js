@@ -49,6 +49,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if(firstActive) firstActive.style.maxHeight = firstActive.scrollHeight + 'px';
     }
 
+    // --- INGREDIENTS PAGE ACCORDION --- //
+    const ingredientCards = document.querySelectorAll('.ingredient-card');
+    if (ingredientCards.length > 0) {
+        ingredientCards.forEach(card => {
+            const header = card.querySelector('.ingredient-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    card.classList.toggle('active');
+                });
+            }
+        });
+    }
+
     // --- CART & E-COMMERCE LOGIC --- //
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
@@ -429,4 +442,4 @@ document.addEventListener("DOMContentLoaded", () => {
         await updateUI();
     });
 
-}); // <-- This is the closing brace and parenthesis that was likely missing.
+});
