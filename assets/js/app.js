@@ -440,4 +440,28 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         await updateUI();
     });
+const handleSubmit = (event) => {
+    event.preventDefault(); // Prevents the default form submission (page reload)
+
+    const myForm = event.target;
+    const formData = new FormData(myForm);
+
+    fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString(),
+    })
+    .then(() => {
+        // Success!
+        console.log("Form successfully submitted");
+        // Hide the form
+        document.getElementById('contact-form').style.display = 'none';
+        // Show the success message
+        document.getElementById('form-success-message').style.display = 'block';
+    })
+    .catch((error) => alert(error));
+};
+
+// Attach the function to the form's submit event
+document.getElementById('contact-form').addEventListener("submit", handleSubmit);
 });
