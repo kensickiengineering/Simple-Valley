@@ -462,6 +462,8 @@ const handleSubmit = (event) => {
     .catch((error) => alert(error));
 };
 
-// Attach the function to the form's submit event
-document.getElementById('contact-form').addEventListener("submit", handleSubmit);
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    contactForm.addEventListener("submit", handleSubmit);
+}
 });
