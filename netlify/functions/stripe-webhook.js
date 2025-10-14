@@ -115,3 +115,13 @@ exports.handler = async (event, context) => {
         body: JSON.stringify({ received: true }),
     };
 };
+case 'checkout.session.completed':
+  const session = eventData.data.object;
+  const shippingAddress = session.shipping_details?.address || {
+      street1: '123 Test St',
+      city: 'Boston',
+      state: 'MA',
+      zip: '02118',
+      country: 'US'
+  };
+  const customerName = session.shipping_details?.name || 'Test Customer';
