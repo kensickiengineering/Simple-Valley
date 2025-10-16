@@ -440,30 +440,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         await updateUI();
     });
-const handleSubmit = (event) => {
-    event.preventDefault(); // Prevents the default form submission (page reload)
+// This function handles the contact form submission
+const handleContactFormSubmit = async (event) => {
+    // Prevent the default form submission which reloads the page
+    event.preventDefault();
 
-    const myForm = event.target;
-    const formData = new FormData(myForm);
+    const form = event.target;
+    const formData = new FormData(form);
 
-    fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(formData).toString(),
-    })
-    .then(() => {
-        // Success!
-        console.log("Form successfully submitted");
-        // Hide the form
-        document.getElementById('contact-form').style.display = 'none';
-        // Show the success message
-        document.getElementById('form-success-message').style.display = 'block';
-    })
-    .catch((error) => alert(error));
+    try {
+        // Attempt to send the form data to Netlify's endpoint
+        const response = await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString(),
+        });
+
+        // **This is the key change:** We check if the server responded with a success code.
+        if (response.ok) {
+            console.log("Form successfully submitted to Netlify");
+            // Hide the form and show the success message
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('form-success-message').style.display = 'block';
+        } else {
+            // If the server gives an error, throw an error to be caught below
+            throw new Error(`Form submission failed. Status: ${response.status}`);
+        }
+    } catch (error) {
+        // Catch any errors (network issues or the error thrown above)
+        console.error("Error submitting form:", error);
+        // Alert the user that something went wrong
+        alert("Sorry, there was an error sending your message. Please try again later.");
+    }
 };
 
+// Find the contact form on the page
 const contactForm = document.getElementById('contact-form');
+
+// If the form exists, attach the submit event listener
 if (contactForm) {
-    contactForm.addEventListener("submit", handleSubmit);
+    contactForm.addEventListener("submit", handleContactFormSubmit);
 }
 });
