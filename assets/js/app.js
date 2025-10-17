@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'The Simple Valley Bar', 
                     price: 39.99,
                     image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SG2SLLSl1NSHnh02hl0ySZi' // Make sure this Price ID is correct
+                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ' // Make sure this Price ID is correct
                 };
                 const qty = parseInt(quantityInput.value) || 1;
                 
