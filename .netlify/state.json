@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "West Springfield",
+			"country": {
+				"code": "US",
+				"name": "United States"
+			},
+			"subdivision": {
+				"code": "MA",
+				"name": "Massachusetts"
+			},
+			"timezone": "America/New_York",
+			"latitude": 42.1177,
+			"longitude": -72.6445,
+			"postalCode": "01089"
+		},
+		"timestamp": 1760577560953
+	}
+}
