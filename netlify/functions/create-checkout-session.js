@@ -1,23 +1,25 @@
 // File: netlify/functions/create-checkout-session.js
-require('dotenv').config();
+require("dotenv").config();
+const Stripe = require("stripe");
 
 exports.handler = async (event) => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
   const standardShippingRateId = process.env.SHIPPING_RATE_STANDARD;
   const freeShippingRateId = process.env.SHIPPING_RATE_FREE;
-  
-  if (!stripeSecretKey || !standardShippingRateId || !freeShippingRateId) {
-    console.error("CRITICAL: A required environment variable is missing.");
+  const siteUrl = process.env.URL;
+
+  if (!stripeSecretKey || !siteUrl) {
+    console.error("Missing Stripe secret key or site URL");
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Server configuration error. Please contact support.' }),
+      body: JSON.stringify({ error: "Server misconfigured." }),
     };
   }
-  
-  const stripe = require('stripe')(stripeSecretKey);
-  
+
+  const stripe = new Stripe(stripeSecretKey);
+
   try {
-    const { cart, userEmail } = JSON.parse(event.body);
+    const { cart, userEmail } = JSON.parse(event.body || "{}");
 
     if (!cart || cart.length === 0) {
       return {
@@ -26,54 +28,46 @@ exports.handler = async (event) => {
       };
     }
 
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * 100 * item.qty), 0);
-    const applicableShippingRateId = subtotal >= 7500 ? freeShippingRateId : standardShippingRateId;
+    // Compute subtotal (in cents)
+    const subtotal = cart.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
+    const applicableShippingRateId =
+      subtotal >= 7500 ? freeShippingRateId : standardShippingRateId;
 
-    const line_items = cart.map(item => ({
+    // Map items
+    const line_items = cart.map((item) => ({
       price: item.priceId,
       quantity: item.qty,
     }));
 
+    // Find or create customer
     let customerId = null;
     if (userEmail) {
-      const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
-      if (customers.data.length > 0) {
-        customerId = customers.data[0].id;
-      } else {
-        const newCustomer = await stripe.customers.create({ email: userEmail });
-        customerId = newCustomer.id;
-      }
+      const existing = await stripe.customers.list({ email: userEmail, limit: 1 });
+      if (existing.data.length > 0) customerId = existing.data[0].id;
+      else customerId = (await stripe.customers.create({ email: userEmail })).id;
     }
 
     const sessionPayload = {
-      payment_method_types: ['card'],
+      mode: "payment",
       line_items,
-      mode: 'payment',
-      success_url: `${process.env.URL}/success.html`,
-      cancel_url: `${process.env.URL}/`,
-      shipping_options: [
-        {
-          shipping_rate: applicableShippingRateId,
-        },
-      ],
-      // --- START: NEW AND CRITICAL ADDITIONS ---
+      payment_method_types: ["card"],
+      success_url: `${siteUrl}/success.html`,
+      cancel_url: `${siteUrl}/`,
+      customer: customerId || undefined,
 
-      // 1. Explicitly tell Stripe to collect the shipping address.
       shipping_address_collection: {
-        allowed_countries: ['US', 'CA'], // Specify which countries you ship to
+        allowed_countries: ["US", "CA"], // adjust to your region
       },
 
-      // 2. Enable Stripe's automatic tax calculation.
-      automatic_tax: {
-        enabled: true,
+      shipping_options: applicableShippingRateId
+        ? [{ shipping_rate: applicableShippingRateId }]
+        : [],
+
+      // (Stripe will return normalized addresses, usable in webhook)
+      metadata: {
+        source: "simple-valley",
       },
-      
-      // --- END: NEW AND CRITICAL ADDITIONS ---
     };
-
-    if (customerId) {
-      sessionPayload.customer = customerId;
-    }
 
     const session = await stripe.checkout.sessions.create(sessionPayload);
 
@@ -81,11 +75,11 @@ exports.handler = async (event) => {
       statusCode: 200,
       body: JSON.stringify({ url: session.url }),
     };
-  } catch (e) {
-    console.error("Error creating Stripe session:", e);
+  } catch (error) {
+    console.error("Error creating Checkout Session:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: `Stripe Error: ${e.message}` }),
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };
