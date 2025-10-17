@@ -300,12 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // --- MODIFIED SECTION --- //
-        // This event listener is now INSIDE updateUI, so it's only added
-        // after we know auth0Client is ready.
         const checkoutBtn = document.getElementById('checkout-button');
         if (checkoutBtn) {
-            // To prevent adding multiple listeners, we can replace the node.
             const newCheckoutBtn = checkoutBtn.cloneNode(true);
             checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
             
@@ -314,8 +310,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 newCheckoutBtn.disabled = true;
                 newCheckoutBtn.textContent = 'Processing...';
                 
-                // This is now safe to call because the listener isn't added
-                // until auth0Client is initialized.
                 const isAuthenticated = await auth0Client.isAuthenticated();
                 const userEmail = isAuthenticated ? (await auth0Client.getUser()).email : null;
         
@@ -336,9 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        // --- END OF MODIFIED SECTION --- //
     
-        // Only run account-specific logic on the account page
         if (window.location.pathname.endsWith('account.html')) {
             if (!isAuthenticated) {
                 window.location.pathname = '/';
@@ -447,16 +439,23 @@ document.addEventListener('DOMContentLoaded', function() {
         await updateUI();
     });
 
+    // --- MODIFIED CONTACT FORM SUBMISSION HANDLER --- //
     const handleContactFormSubmit = async (event) => {
         event.preventDefault();
         const form = event.target;
         const formData = new FormData(form);
+        
+        // Create a URLSearchParams object to properly encode the data.
+        const urlEncodedData = new URLSearchParams(formData);
+        // Netlify's AJAX form submission requires the 'form-name' field to be sent.
+        // The value must match the 'name' attribute of your HTML form tag.
+        urlEncodedData.append('form-name', form.getAttribute('name'));
 
         try {
             const response = await fetch("/", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData).toString(),
+                body: urlEncodedData.toString(),
             });
 
             if (response.ok) {
@@ -476,3 +475,4 @@ document.addEventListener('DOMContentLoaded', function() {
         contactForm.addEventListener("submit", handleContactFormSubmit);
     }
 });
+
