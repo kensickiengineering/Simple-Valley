@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartBtns = document.querySelectorAll('.cart-btn');
     const closeCartBtn = document.getElementById('close-cart-btn');
     const cartBody = document.getElementById('cart-body');
-    const checkoutButton = document.getElementById('checkout-button');
+    const checkoutButton = document.getElementById('checkout-button'); // Keep reference for disabling
 
     let cart = JSON.parse(localStorage.getItem('simpleValleyCart')) || [];
 
@@ -121,8 +121,9 @@ document.addEventListener('DOMContentLoaded', function() {
             subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
         }
 
-        if (checkoutButton) {
-            checkoutButton.disabled = cart.length === 0;
+        const checkoutBtn = document.getElementById('checkout-button');
+        if (checkoutBtn) {
+            checkoutBtn.disabled = cart.length === 0;
         }
     }
 
@@ -196,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: 'The Simple Valley Bar', 
                     price: 39.99,
                     image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ' // Make sure this Price ID is correct
+                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ'
                 };
                 const qty = parseInt(quantityInput.value) || 1;
                 
@@ -247,33 +248,6 @@ document.addEventListener('DOMContentLoaded', function() {
         logoutParams: { returnTo: window.location.origin }
     });
     
-    if (checkoutButton) {
-        checkoutButton.addEventListener('click', async function() {
-            if (cart.length === 0) return;
-            checkoutButton.disabled = true;
-            checkoutButton.textContent = 'Processing...';
-            
-            const isAuthenticated = await auth0Client.isAuthenticated();
-            const userEmail = isAuthenticated ? (await auth0Client.getUser()).email : null;
-    
-            try {
-                const response = await fetch('/.netlify/functions/create-checkout-session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cart: cart, userEmail: userEmail }),
-                });
-                if (!response.ok) throw new Error('Server error');
-                const { url } = await response.json();
-                window.location = url;
-            } catch (e) {
-                console.error(e);
-                alert('An error occurred. Please try again.');
-                checkoutButton.disabled = false;
-                checkoutButton.textContent = 'Proceed to Checkout';
-            }
-        });
-    }
-
     async function fetchAndDisplayOrders() {
         const container = document.getElementById('order-history-container');
         if (!container) return;
@@ -325,18 +299,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         }
+
+        // --- MODIFIED SECTION --- //
+        // This event listener is now INSIDE updateUI, so it's only added
+        // after we know auth0Client is ready.
+        const checkoutBtn = document.getElementById('checkout-button');
+        if (checkoutBtn) {
+            // To prevent adding multiple listeners, we can replace the node.
+            const newCheckoutBtn = checkoutBtn.cloneNode(true);
+            checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
+            
+            newCheckoutBtn.addEventListener('click', async function() {
+                if (cart.length === 0) return;
+                newCheckoutBtn.disabled = true;
+                newCheckoutBtn.textContent = 'Processing...';
+                
+                // This is now safe to call because the listener isn't added
+                // until auth0Client is initialized.
+                const isAuthenticated = await auth0Client.isAuthenticated();
+                const userEmail = isAuthenticated ? (await auth0Client.getUser()).email : null;
+        
+                try {
+                    const response = await fetch('/.netlify/functions/create-checkout-session', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ cart: cart, userEmail: userEmail }),
+                    });
+                    if (!response.ok) throw new Error('Server error');
+                    const { url } = await response.json();
+                    window.location = url;
+                } catch (e) {
+                    console.error(e);
+                    alert('An error occurred. Please try again.');
+                    newCheckoutBtn.disabled = false;
+                    newCheckoutBtn.textContent = 'Proceed to Checkout';
+                }
+            });
+        }
+        // --- END OF MODIFIED SECTION --- //
     
         // Only run account-specific logic on the account page
         if (window.location.pathname.endsWith('account.html')) {
             if (!isAuthenticated) {
-                // If not logged in, redirect to home or show login prompt
                 window.location.pathname = '/';
                 return;
             }
 
             const user = await auth0Client.getUser();
             
-            // --- Show main account view --- //
             document.getElementById('loading-state').style.display = 'none';
             document.getElementById('account-view').style.display = 'block';
             document.getElementById('user-profile').innerHTML = `<h3>Welcome back!</h3><p><strong>Email:</strong> ${user.email}</p>`;
@@ -344,14 +354,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             await fetchAndDisplayOrders();
 
-            // --- Settings Dropdown Logic --- //
             const settingsBtn = document.getElementById('settings-menu-btn');
             const settingsDropdown = document.getElementById('settings-dropdown-content');
             const changeEmailBtn = document.getElementById('change-email-btn');
             const passwordSection = document.getElementById('password-section');
             const deleteAccountBtn = document.getElementById('delete-account-btn');
 
-            // Toggle dropdown visibility
             settingsBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 settingsDropdown.classList.toggle('active');
@@ -362,7 +370,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Check connection type to show/hide relevant buttons
             const isPasswordUser = user.sub.startsWith('auth0|');
             if (isPasswordUser) {
                 changeEmailBtn.style.display = 'block';
@@ -372,7 +379,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 passwordSection.style.display = 'none';
             }
 
-            // --- Event Listeners for Settings Actions --- //
             async function handleUserAction(action, payload) {
                 try {
                     const response = await fetch('/.netlify/functions/manage-user', {
@@ -440,45 +446,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         await updateUI();
     });
-// This function handles the contact form submission
-const handleContactFormSubmit = async (event) => {
-    // Prevent the default form submission which reloads the page
-    event.preventDefault();
 
-    const form = event.target;
-    const formData = new FormData(form);
+    const handleContactFormSubmit = async (event) => {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
 
-    try {
-        // Attempt to send the form data to Netlify's endpoint
-        const response = await fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams(formData).toString(),
-        });
+        try {
+            const response = await fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(formData).toString(),
+            });
 
-        // **This is the key change:** We check if the server responded with a success code.
-        if (response.ok) {
-            console.log("Form successfully submitted to Netlify");
-            // Hide the form and show the success message
-            document.getElementById('contact-form').style.display = 'none';
-            document.getElementById('form-success-message').style.display = 'block';
-        } else {
-            // If the server gives an error, throw an error to be caught below
-            throw new Error(`Form submission failed. Status: ${response.status}`);
+            if (response.ok) {
+                document.getElementById('contact-form').style.display = 'none';
+                document.getElementById('form-success-message').style.display = 'block';
+            } else {
+                throw new Error(`Form submission failed. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("Sorry, there was an error sending your message. Please try again later.");
         }
-    } catch (error) {
-        // Catch any errors (network issues or the error thrown above)
-        console.error("Error submitting form:", error);
-        // Alert the user that something went wrong
-        alert("Sorry, there was an error sending your message. Please try again later.");
+    };
+
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener("submit", handleContactFormSubmit);
     }
-};
-
-// Find the contact form on the page
-const contactForm = document.getElementById('contact-form');
-
-// If the form exists, attach the submit event listener
-if (contactForm) {
-    contactForm.addEventListener("submit", handleContactFormSubmit);
-}
 });
