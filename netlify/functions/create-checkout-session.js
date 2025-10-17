@@ -3,12 +3,9 @@ require('dotenv').config();
 
 exports.handler = async (event) => {
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-  // --- START: NEW SHIPPING VARIABLES ---
   const standardShippingRateId = process.env.SHIPPING_RATE_STANDARD;
   const freeShippingRateId = process.env.SHIPPING_RATE_FREE;
-  // --- END: NEW SHIPPING VARIABLES ---
   
-  // Environment variable validation
   if (!stripeSecretKey || !standardShippingRateId || !freeShippingRateId) {
     console.error("CRITICAL: A required environment variable is missing.");
     return {
@@ -29,14 +26,8 @@ exports.handler = async (event) => {
       };
     }
 
-    // --- START: NEW SHIPPING LOGIC ---
-    // 1. Calculate the subtotal in cents to check against the threshold.
-    // NOTE: This assumes item.price is the dollar value (e.g., 39.99)
     const subtotal = cart.reduce((sum, item) => sum + (item.price * 100 * item.qty), 0);
-
-    // 2. Choose the correct shipping rate ID based on the subtotal.
     const applicableShippingRateId = subtotal >= 7500 ? freeShippingRateId : standardShippingRateId;
-    // --- END: NEW SHIPPING LOGIC ---
 
     const line_items = cart.map(item => ({
       price: item.priceId,
@@ -59,14 +50,25 @@ exports.handler = async (event) => {
       line_items,
       mode: 'payment',
       success_url: `${process.env.URL}/success.html`,
-      cancel_url: `${process.env.URL}/`, // Changed to root for better UX
-      // --- MODIFIED: ADD SHIPPING OPTIONS ---
-      // This key tells Stripe to add shipping. It implicitly collects the address.
+      cancel_url: `${process.env.URL}/`,
       shipping_options: [
         {
           shipping_rate: applicableShippingRateId,
         },
       ],
+      // --- START: NEW AND CRITICAL ADDITIONS ---
+
+      // 1. Explicitly tell Stripe to collect the shipping address.
+      shipping_address_collection: {
+        allowed_countries: ['US', 'CA'], // Specify which countries you ship to
+      },
+
+      // 2. Enable Stripe's automatic tax calculation.
+      automatic_tax: {
+        enabled: true,
+      },
+      
+      // --- END: NEW AND CRITICAL ADDITIONS ---
     };
 
     if (customerId) {
@@ -82,7 +84,7 @@ exports.handler = async (event) => {
   } catch (e) {
     console.error("Error creating Stripe session:", e);
     return {
-      statusCode: 500, // Use 500 for internal server/API errors
+      statusCode: 500,
       body: JSON.stringify({ error: `Stripe Error: ${e.message}` }),
     };
   }
