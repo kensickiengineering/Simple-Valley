@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (newEmail) {
                     const result = await handleUserAction('changeEmail', { newEmail });
                     if (result) {
-                        alert('Please check your inbox to verify your new email.');
+                        alert('Please check your inbox to verify your new email. The confirmation link should arrive within the next 5 minutes.');
                         document.querySelector('#user-profile p').innerHTML = `<strong>Email:</strong> ${newEmail}`;
                     }
                 }
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('reset-btn').addEventListener('click', async () => {
                 const result = await handleUserAction('changePassword');
                 if (result) {
-                    alert('A password reset link has been sent to your email.');
+                    alert('A password reset link has been sent to your email. Please allow up to 5 minutes for the email to arrive.');
                 }
             });
 
