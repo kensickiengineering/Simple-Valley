@@ -39,6 +39,32 @@
     "priceCurrency": "USD",
     "price": "39.99",
     "availability": "https://schema.org/InStock"
+    "priceValidUntil": "2025-12-31",
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "US"
+      }
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "7.99",
+        "currency": "USD"
+      }
+      "freeShippingThreshold": {
+        "@type": "MonetaryAmount",
+        "value": "75.00",
+        "currency": "USD"
+      }
+    }
+    "hasMerchantReturnPolicy": {
+      "@type": "MerchantReturnPolicy",
+      "applicableCountry": "US",
+      "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+      "merchantReturnDays": 30,
+      "returnMethod": "https://schema.org/ReturnByMail",
+      "returnFees": "https://schema.org/FreeReturn"
+    }
   }
 }
 </script>
