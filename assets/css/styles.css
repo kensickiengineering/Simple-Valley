@@ -1208,3 +1208,19 @@ h1, h2, h3, h4 {
     transition: color 0.2s;
 }
 .close-modal:hover { color: #1F2937; }
+
+.purchase-actions.full-width {
+    display: block; 
+    width: 100%;
+}
+
+.big-btn {
+    width: 100%;
+    padding: 20px; /* Taller button */
+    font-size: 1.2rem; /* Larger text */
+    font-weight: 800;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

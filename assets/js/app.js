@@ -178,71 +178,80 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // --- NEW BUNDLE LOGIC --- //
-        const bundleOptions = document.querySelectorAll('.bundle-option');
-        const hiddenQtyInput = document.getElementById('selectedQuantity');
-        const addToCartBtn = document.getElementById('addToCartBtn');
+        // --- NEW BUNDLE LOGIC (Updated for Dynamic Stripe IDs) --- //
+const bundleOptions = document.querySelectorAll('.bundle-option');
+const addToCartBtn = document.getElementById('addToCartBtn');
 
-        if (bundleOptions.length > 0) {
-            bundleOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // 1. Visual Update: Remove active class from all, add to clicked
-                    bundleOptions.forEach(opt => opt.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // 2. Data Update: Get quantity and price from data attributes
-                    const qty = this.dataset.qty;
-                    const price = this.dataset.price;
-                    
-                    // 3. Update hidden input and Button Text
-                    if (hiddenQtyInput) hiddenQtyInput.value = qty;
-                    if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${price}`;
-                });
-            });
+// Variables to store current selection (Default to 2 Boxes)
+let currentSelection = {
+    qty: 1, // Logic change: We treat a "bundle" as Qty 1 of that specific bundle product
+    price: 79.99,
+    title: '2 Boxes (24 Bars)',
+    priceId: 'price_1SgqJDLXAfa3XjXDkbgFa7Ka' // Default ID
+};
+
+if (bundleOptions.length > 0) {
+    bundleOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // 1. Visual Update
+            bundleOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            
+            // 2. Data Update
+            const price = this.dataset.price;
+            const stripeId = this.dataset.stripeId;
+            const bundleTitle = this.querySelector('.bundle-title').innerText;
+
+            // Update Global Selection Variable
+            currentSelection = {
+                qty: 1, // We are buying 1 "Bundle" unit
+                price: price,
+                title: `The Simple Valley Bar - ${bundleTitle}`,
+                priceId: stripeId
+            };
+            
+            // 3. Update Button Text
+            if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${price}`;
+        });
+    });
+}
+
+// --- ADD TO CART LOGIC --- //
+if (addToCartBtn) {
+    addToCartBtn.addEventListener('click', function() {
+        const product = { 
+            id: currentSelection.priceId, // Use Stripe ID as unique Cart ID
+            title: currentSelection.title, 
+            price: parseFloat(currentSelection.price),
+            image: 'assets/img/SecondaryPic2.png',
+            priceId: currentSelection.priceId // Send this to Stripe
+        };
+        
+        // Add to Global Cart Array
+        const existingProduct = cart.find(p => p.id === product.id);
+        if (existingProduct) {
+            existingProduct.qty += 1;
+        } else {
+            cart.push({ ...product, qty: 1 });
         }
+        
+        saveCart();
+        updateCartUI();
+        openCart();
 
-        // --- ADD TO CART LOGIC --- //
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-                // Get quantity from the hidden input (controlled by bundles)
-                const qty = parseInt(hiddenQtyInput.value) || 1;
-                
-                // Define the product
-                const product = { 
-                    id: 'prod_simple_bar_01',
-                    title: 'The Simple Valley Bar (12-Pack)', 
-                    price: 39.99, // Base price for 1 box
-                    image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ' // Your Stripe Price ID
-                };
-                
-                // Add to Global Cart Array
-                // Note: We add the 'qty' (e.g., 4 boxes) to the cart item
-                const existingProduct = cart.find(p => p.id === product.id);
-                if (existingProduct) {
-                    existingProduct.qty += qty;
-                } else {
-                    cart.push({ ...product, qty });
-                }
-                
-                saveCart();
-                updateCartUI();
-                openCart();
+        // Button Feedback
+        const originalText = this.textContent;
+        this.textContent = 'Added! ✓';
+        this.classList.add('added');
+        this.disabled = true;
 
-                // Button Feedback
-                const originalText = this.textContent;
-                this.textContent = 'Added! ✓';
-                this.classList.add('added');
-                this.disabled = true;
-
-                setTimeout(() => {
-                    this.textContent = originalText;
-                    this.classList.remove('added');
-                    this.disabled = false;
-                }, 2000);
-            });
-        }
-    }
+        setTimeout(() => {
+            this.textContent = originalText;
+            this.classList.remove('added');
+            this.disabled = false;
+        }, 2000);
+    });
+}
     
     // --- STRIPE & AUTH0 LOGIC --- //
     let auth0Client = null;
