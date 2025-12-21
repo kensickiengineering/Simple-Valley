@@ -1224,3 +1224,89 @@ h1, h2, h3, h4 {
     justify-content: center;
     align-items: center;
 }
+
+/* ADD THIS TO THE BOTTOM OF STYLES.CSS */
+
+/* --- NEW DIFFERENCE BANNER (Image Based) --- */
+.difference-banner {
+    position: relative;
+    padding: 100px 0;
+    overflow: hidden; /* Ensures image doesn't spill out */
+    color: var(--white);
+    text-align: center;
+}
+
+.banner-bg-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Puts it behind text */
+}
+
+.banner-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* crop to fill */
+    filter: brightness(0.4); /* Darken so white text pops */
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2; /* Puts text on top */
+}
+
+.difference-grid-banner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.diff-banner-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 30px 20px;
+    border-radius: 12px;
+}
+
+.diff-banner-card h3 {
+    color: var(--white);
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+.diff-banner-card p {
+    color: #e5e7eb;
+}
+
+/* --- PRODUCT PAGE FIXES --- */
+.product-description-text {
+    font-size: 1.15rem;
+    color: #4B5563;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.purchase-actions.full-width {
+    width: 100%;
+    display: block;
+    margin-top: 20px;
+}
+
+.big-btn {
+    width: 100%;
+    padding: 20px;
+    font-size: 1.3rem; /* Bigger text */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.qty-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+}
