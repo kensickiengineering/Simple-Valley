@@ -166,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.querySelector('.shop-layout')) {
         const mainImg = document.getElementById('mainImg');
         const thumbs = document.querySelectorAll('.thumb');
+        
+        // Image Gallery Logic
         if (mainImg && thumbs.length > 0) {
             thumbs.forEach(thumb => {
                 thumb.addEventListener('click', function() {
@@ -176,31 +178,46 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        const decreaseQtyBtn = document.getElementById('decreaseQty');
-        const increaseQtyBtn = document.getElementById('increaseQty');
-        const quantityInput = document.getElementById('quantity');
-        if (decreaseQtyBtn && increaseQtyBtn && quantityInput) {
-            decreaseQtyBtn.addEventListener('click', () => {
-                let currentQty = parseInt(quantityInput.value);
-                if (currentQty > 1) quantityInput.value = currentQty - 1;
-            });
-            increaseQtyBtn.addEventListener('click', () => {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
+        // --- NEW BUNDLE LOGIC --- //
+        const bundleOptions = document.querySelectorAll('.bundle-option');
+        const hiddenQtyInput = document.getElementById('selectedQuantity');
+        const addToCartBtn = document.getElementById('addToCartBtn');
+
+        if (bundleOptions.length > 0) {
+            bundleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 1. Visual Update: Remove active class from all, add to clicked
+                    bundleOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 2. Data Update: Get quantity and price from data attributes
+                    const qty = this.dataset.qty;
+                    const price = this.dataset.price;
+                    
+                    // 3. Update hidden input and Button Text
+                    if (hiddenQtyInput) hiddenQtyInput.value = qty;
+                    if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${price}`;
+                });
             });
         }
 
-        const addToCartBtn = document.getElementById('addToCartBtn');
+        // --- ADD TO CART LOGIC --- //
         if (addToCartBtn) {
             addToCartBtn.addEventListener('click', function() {
+                // Get quantity from the hidden input (controlled by bundles)
+                const qty = parseInt(hiddenQtyInput.value) || 1;
+                
+                // Define the product
                 const product = { 
                     id: 'prod_simple_bar_01',
-                    title: 'The Simple Valley Bar', 
-                    price: 39.99,
+                    title: 'The Simple Valley Bar (12-Pack)', 
+                    price: 39.99, // Base price for 1 box
                     image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ'
+                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ' // Your Stripe Price ID
                 };
-                const qty = parseInt(quantityInput.value) || 1;
                 
+                // Add to Global Cart Array
+                // Note: We add the 'qty' (e.g., 4 boxes) to the cart item
                 const existingProduct = cart.find(p => p.id === product.id);
                 if (existingProduct) {
                     existingProduct.qty += qty;
@@ -212,12 +229,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateCartUI();
                 openCart();
 
+                // Button Feedback
+                const originalText = this.textContent;
                 this.textContent = 'Added! ✓';
                 this.classList.add('added');
                 this.disabled = true;
 
                 setTimeout(() => {
-                    this.textContent = 'Add to Cart';
+                    this.textContent = originalText;
                     this.classList.remove('added');
                     this.disabled = false;
                 }, 2000);
@@ -474,5 +493,32 @@ document.addEventListener('DOMContentLoaded', function() {
     if (contactForm) {
         contactForm.addEventListener("submit", handleContactFormSubmit);
     }
+// --- NEWSLETTER POPUP LOGIC --- //
+    const modal = document.getElementById('newsletterModal');
+    const closeModal = document.querySelector('.close-modal');
+
+    // Show popup after 6 seconds ONLY if user hasn't seen it
+    if (modal && !localStorage.getItem('simpleValleyPopupShown')) {
+        setTimeout(() => {
+            modal.style.display = 'block';
+        }, 6000); 
+    }
+
+    // Close Button Logic
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+            localStorage.setItem('simpleValleyPopupShown', 'true'); // Remember they closed it
+        });
+    }
+
+    // Close if clicking outside the box
+    window.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            modal.style.display = 'none';
+            localStorage.setItem('simpleValleyPopupShown', 'true');
+        }
+    });
+
 });
 
