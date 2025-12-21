@@ -3,150 +3,200 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Beef Liver Protein Bars - Simple Valley</title>
+    <title>Beef Liver Protein Bars — Animal based, Paleo, Nut-Free | Simple Valley</title>
     <meta name="description" content="Clean, nutrient-dense protein bars made with real beef liver.">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+    <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/4VKHyANX7auOCgmG11wE6aTDyHwFtbWXkhOvGXoY" async></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
+    
+    <link rel="icon" type="image/png" href="/favicon-32x32.png">
 </head>
 <body>
-    <div class="promo-banner"><p>ALL PRE-ORDERS SHIP ON DECEMBER 31. SECURE YOUR BARS TODAY!</p></div>
-    
-    <header class="site-header">
-        <div class="container nav-container">
-            <div class="logo-brand">
-                <a href="index.html" class="logo-circle"><img src="assets/img/RealLogo.png" alt="SV Logo"></a>
-                <a href="index.html" class="brand-name">Simple Valley</a>
-            </div>
-            <nav class="main-nav">
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="shop.html">Shop</a></li>
-                    <li><a href="ourstory.html">Our Story</a></li>
-                    <li><a href="ingredients.html">Ingredients</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </nav>
-            <div class="nav-meta">
-                <a href="account.html" class="icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
-                <a href="#" class="icon-btn cart-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span class="cart-count" id="cartCount">0</span>
-                </a>
-            </div>
-            <button class="mobile-nav-toggle"><span></span><span></span><span></span></button>
-        </div>
-    </header>
 
-    <main>
-        <section class="hero hero-bg">
-            <div class="hero-overlay">
-                <div class="hero-text centered fade-in">
-                    <h1>The Beef Liver Protein Bar</h1>
-                    <p>20g protein · Whole food ingredients · No seed oils · Nut free</p>
+<div class="promo-banner">
+    <p>ALL PRE-ORDERS SHIP ON DECEMBER 31. SECURE YOUR BARS TODAY FOR MAXIMAL SAVINGS!</p>
+</div>
+
+<header class="site-header">
+    <div class="container nav-container">
+        <div class="logo-brand">
+            <a href="index.html" class="logo-circle" aria-label="Home"><img src="assets/img/RealLogo.png" alt="SV Logo"></a>
+            <a href="index.html" class="brand-name">Simple Valley</a>
+        </div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+        <div class="nav-meta">
+            <a id="account-link" href="account.html" class="icon-btn" title="Account"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+            <a href="#" class="icon-btn cart-btn" title="Cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </a>
+        </div>
+        <button class="mobile-nav-toggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<main>
+    <section class="hero hero-bg">
+        <div class="hero-overlay">
+            <div class="hero-text centered fade-in">
+                <h1>The Beef Liver Protein Bar</h1>
+                <p>20g protein · Whole food ingredients · No seed oils · Nut free · Paleo</p>
+                <a href="shop.html" class="button">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section" style="padding: 100px 0;">
+        <h2 class="section-title">The Simple Valley Difference</h2>
+        <div class="difference-grid">
+            <div class="difference-card fade-in">
+                <div class="card-img-container"><img src="assets/img/beefliver.jpg" alt="Nutrient dense, grass fed beef liver"></div>
+                <h3>Grass-Fed Liver in Every Bar</h3>
+            </div>
+            <div class="difference-card fade-in" style="--delay: 0.1s;">
+                <div class="card-img-container"><img src="assets/img/Ingredients_IMG2.png" alt="beef liver protein bar made with whole-food paleo ingredients from Simple Valley"></div>
+                <h3>Ultra-Clean Ingredients</h3>
+            </div>
+            <div class="difference-card fade-in" style="--delay: 0.2s;">
+                <div class="card-img-container"><img src="assets/img/macros1.png" alt="beef liver bar with 20 grams protein and animal based ingredients"></div>
+                <h3>Exceptional Macros</h3>
+            </div>
+            <div class="difference-card fade-in" style="--delay: 0.3s;">
+                <div class="card-img-container"><img src="assets/img/nonuts1.png" alt="Beef liver bar with no nuts, seeds, natural flavors, or artificial flavors or preservatives"></div>
+                <h3>No Nuts or Seeds, Ever</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="why-beef">
+        <div class="why-overlay">
+            <div class="container">
+                <h2 class="section-title light">Why Beef Liver?</h2>
+                <div class="why-grid">
+                    <div class="why-box fade-in">
+                        <h3>Nutrient Dense</h3>
+                        <p>Beef liver is nature’s multivitamin, packed with essential vitamins and minerals.</p>
+                    </div>
+                    <div class="why-box fade-in" style="--delay: 0.1s;">
+                        <h3>High in Protein</h3>
+                        <p>Delivers clean, bioavailable protein to fuel performance and recovery.</p>
+                    </div>
+                    <div class="why-box fade-in" style="--delay: 0.2s;">
+                        <h3>Grass-Fed Quality</h3>
+                        <p>We source from grass-fed Argentinian cattle, lab tested for purity and optimal nutrition.</p>
+                    </div>
+                </div>
+                <div class="why-cta fade-in">
                     <a href="shop.html" class="button">Shop Now</a>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="difference-banner">
-            <div class="banner-bg-wrapper">
-                <img src="assets/img/beefliver.jpg" alt="Background" class="banner-bg-img">
-            </div>
-            <div class="banner-content container">
-                <h2 class="section-title light">The Simple Valley Difference</h2>
-                <div class="difference-grid-banner">
-                    <div class="diff-banner-card fade-in">
-                        <h3>Grass-Fed Beef Liver</h3>
-                        <p>Nature's multivitamin, sourced from pure Argentinian cattle.</p>
-                    </div>
-                    <div class="diff-banner-card fade-in" style="--delay: 0.1s;">
-                        <h3>Ultra-Clean Ingredients</h3>
-                        <p>No natural flavors, gums, or weird syrups.</p>
-                    </div>
-                    <div class="diff-banner-card fade-in" style="--delay: 0.2s;">
-                        <h3>20g Animal Protein</h3>
-                        <p>Double the protein of competitors for maximum recovery.</p>
-                    </div>
-                    <div class="diff-banner-card fade-in" style="--delay: 0.3s;">
-                        <h3>Nut-Free & Safe</h3>
-                        <p>School-safe and allergen-friendly.</p>
-                    </div>
+    <section class="reviews-section-new">
+        <div class="container">
+            <h2 class="section-title">What Our Customers Are Saying</h2>
+            <div class="reviews-grid-new">
+                <div class="review-card-new fade-in">
+                    <div class="stars">★★★★★</div>
+                    <p>"Beef liver gives me a noticeable energy boost. I love how these bars have all of its benefits without the taste."</p>
+                    <div class="review-author">- Mike M.</div>
                 </div>
-            </div>
-        </section>
-
-        <section class="why-beef">
-            <div class="why-overlay">
-                <div class="container">
-                    <h2 class="section-title light">Why Beef Liver?</h2>
-                    <div class="why-grid">
-                        <div class="why-box fade-in">
-                            <h3>Nutrient Dense</h3>
-                            <p>Packed with essential vitamins and minerals.</p>
-                        </div>
-                        <div class="why-box fade-in">
-                            <h3>High in Protein</h3>
-                            <p>Delivers clean, bioavailable protein.</p>
-                        </div>
-                        <div class="why-box fade-in">
-                            <h3>Grass-Fed Quality</h3>
-                            <p>Lab tested for purity and nutrition.</p>
-                        </div>
-                    </div>
-                    <div class="why-cta fade-in"><a href="shop.html" class="button">Shop Now</a></div>
+                <div class="review-card-new fade-in" style="--delay: 0.1s;">
+                    <div class="stars">★★★★★</div>
+                    <p>"Clean ingredients + beef liver. This is my new go-to snack when I'm busy and need a quick boost."</p>
+                    <div class="review-author">- Lorraine K.</div>
                 </div>
-            </div>
-        </section>
-
-        <section class="reviews-section-new">
-            <div class="container">
-                <h2 class="section-title">What Our Customers Are Saying</h2>
-                <div class="reviews-grid-new">
-                    <div class="review-card-new fade-in">
-                        <div class="stars">★★★★★</div>
-                        <p>"Beef liver gives me a noticeable energy boost. Love it!"</p>
-                        <div class="review-author">- Mike M.</div>
-                    </div>
-                    <div class="review-card-new fade-in">
-                        <div class="stars">★★★★★</div>
-                        <p>"Clean ingredients + beef liver. My new go-to snack."</p>
-                        <div class="review-author">- Lorraine K.</div>
-                    </div>
+                <div class="review-card-new fade-in" style="--delay: 0.2s;">
+                    <div class="stars">★★★★★</div>
+                    <p>"The beef liver is a game-changer. I feel fantastic and energized eating these. Highly recommend!"</p>
+                    <div class="review-author">- Sam K.</div>
                 </div>
-            </div>
-        </section>
-
-        <section class="cta-section">
-            <div class="container cta-container fade-in">
-                <a href="shop.html" class="button">Try Us Out!</a>
-            </div>
-        </section>
-    </main>
-
-    <footer class="site-footer">
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul><li><a href="index.html">Home</a></li><li><a href="shop.html">Shop</a></li></ul>
-            </div>
-            <div class="footer-col">
-                <h4>Company</h4>
-                <ul><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li></ul>
             </div>
         </div>
-        <div class="container"><p class="copyright">© 2025 Simple Valley. All Rights Reserved.</p></div>
-    </footer>
+    </section>
 
-    <div class="cart-overlay" id="cart-overlay"></div>
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart-btn">&times;</button></div>
-        <div class="cart-body" id="cart-body"></div>
-        <div class="cart-footer">
-            <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
-            <button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button>
+    <section class="cta-section">
+        <div class="container cta-container fade-in">
+            <a href="shop.html" class="button">Try Us Out!</a>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-col subscribe-col">
+            <h4>Subscribe to our Newsletter</h4>
+            <form class="subscribe-form" action="https://ed77f94d.sibforms.com/serve/MUIFAAP_gcvpkUblNcbmwAmTTH4n1nSHiAfaGcDdNnmYq-86dGj9sWcAd9nqW8CisP2-ZfcdoEhQH3i3R3le4URqoso6kIfmKD_RJDilssGAteOtKkUIqMgXa9x1DSoV20CSrhbEXBDZNzT5ek7TkhAAmjsp_yRCM03xVUfVHEemoWyrg0uLDn5bTDDjzHWUqyR5SbTUayg3cTcMSQ==" method="GET" target="_blank">
+                <input type="email" placeholder="Your email" aria-label="Email" required>
+                <button type="submit" class="button">Subscribe</button>
+            </form>
+            <div class="social-links">
+                <a href="#" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+            </div>
         </div>
     </div>
+    <div class="container">
+        <p class="copyright-disclaimer">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+        <p class="copyright">© <span id="year"></span> Simple Valley. All Rights Reserved.</p>
+    </div>
+</footer>
 
-    <script src="assets/js/app.js"></script>
+<div id="newsletterModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 style="color: #D97706; margin-bottom: 10px;">The Founder's Batch</h2>
+        <p style="color: #4B5563; margin-bottom: 24px;">We are shipping our first batch on Dec 31st. Join the list for updates and early access.</p>
+        <form class="subscribe-form" style="display: block; max-width: 100%;">
+            <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px;">
+            <button type="submit" class="button" style="width: 100%;">Join the List</button>
+        </form>
+        <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 16px;">No spam. Just protein.</p>
+    </div>
+</div>
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+        <h3>Your Cart</h3>
+        <button class="close-btn" id="close-cart-btn">&times;</button>
+    </div>
+    <div class="cart-body" id="cart-body"></div>
+    <div class="cart-footer">
+        <div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+        <button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button>
+    </div>
+</div>
+
+<script src="assets/js/app.js"></script>
 </body>
 </html>
