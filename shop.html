@@ -3,7 +3,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Shop Beef Liver Protein Bars - Clean, Paleo Ingredients | Simple Valley</title>
-    <meta name="description" content="Shop grass fed beef liver protein bars. Animal based, real ingredients.">
+    <meta name="description" content="Shop grass fed beef liver protein bars.">
     <script src="https://js.stripe.com/v3/"></script>
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
     <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/4VKHyANX7auOCgmG11wE6aTDyHwFtbWXkhOvGXoY" async></script>
@@ -68,7 +68,6 @@
 
                 <div class="bundle-selector-wrapper" style="margin-bottom: 24px;">
                     <h3 style="font-size: 0.9rem; text-transform: uppercase; color: #9CA3AF; margin-bottom: 12px; letter-spacing: 1px;">Select Quantity:</h3>
-                    
                     <div class="bundle-container">
                         <div class="bundle-option" data-qty="1" data-price="42.00" data-stripe-id="price_1SgqIXLXAfa3XjXD76hPvwJH">
                             <div class="radio-circle"></div>
@@ -81,7 +80,6 @@
                                 <span class="per-bar-price">$3.50/bar</span>
                             </div>
                         </div>
-
                         <div class="bundle-option active" data-qty="2" data-price="79.99" data-stripe-id="price_1SgqJDLXAfa3XjXDkbgFa7Ka">
                             <div class="radio-circle"></div>
                             <div class="bundle-details">
@@ -93,7 +91,6 @@
                                 <span class="per-bar-price">$3.33/bar</span>
                             </div>
                         </div>
-
                         <div class="bundle-option best-value" data-qty="4" data-price="144.00" data-stripe-id="price_1SgqJgLXAfa3XjXDs6QYcn1I">
                             <div class="radio-circle"></div>
                             <div class="bundle-details">
@@ -125,9 +122,18 @@
                         <button class="accordion-header">Key Features</button>
                         <div class="accordion-content">
                             <div class="circle-features">
-                                <div class="circle-item"><div class="circle-text">Grass-fed<br>Beef Liver</div></div>
-                                <div class="circle-item"><div class="circle-text">Whole Food<br>Ingredients</div></div>
-                                <div class="circle-item"><div class="circle-text">20g<br>Protein</div></div>
+                                <div class="circle-item">
+                                    <div class="circle-icon"><img src="assets/icons/cow.png" alt="Grass-fed"></div>
+                                    <div class="circle-text">Grass-fed<br>Beef Liver</div>
+                                </div>
+                                <div class="circle-item">
+                                    <div class="circle-icon">🌱</div>
+                                    <div class="circle-text">Whole Food<br>Ingredients</div>
+                                </div>
+                                <div class="circle-item">
+                                    <div class="circle-icon"><img src="assets/icons/dumbbell.png" alt="Strength"></div>
+                                    <div class="circle-text">20g<br>Protein</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -174,6 +180,23 @@
     </section>
 </main>
 
+<div id="newsletterModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-left">
+            <h2>Join the Tribe + Get 10% OFF</h2>
+            <p>Join the Founder's List for exclusive early access and savings.</p>
+            <form class="subscribe-form" style="display: block; max-width: 100%;">
+                <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px; border: 2px solid #000;">
+                <button type="submit" class="button" style="width: 100%; background-color: #D97706; font-weight: 800;">Unlock My Discount</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
+        </div>
+        <div class="modal-right">
+            </div>
+    </div>
+</div>
+
 <div class="yotpo-widget-instance" data-yotpo-instance-id="1227563" data-yotpo-product-id="SV-BL-01"></div>
 
 <footer class="site-footer">
@@ -184,18 +207,6 @@
     </div>
     <div class="container"><p class="copyright">© 2025 Simple Valley. All Rights Reserved.</p></div>
 </footer>
-
-<div id="newsletterModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2 style="color: #D97706; margin-bottom: 10px;">The Founder's Batch</h2>
-        <p>We are shipping our first batch on Dec 31st. Join the list for updates and early access.</p>
-        <form class="subscribe-form" style="display: block; max-width: 100%;">
-            <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px;">
-            <button type="submit" class="button" style="width: 100%;">Join the List</button>
-        </form>
-    </div>
-</div>
 
 <div class="cart-overlay" id="cart-overlay"></div>
 <div class="cart-sidebar" id="cart-sidebar">

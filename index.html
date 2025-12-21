@@ -11,7 +11,6 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
-    
     <link rel="icon" type="image/png" href="/favicon-32x32.png">
 </head>
 <body>
@@ -57,24 +56,24 @@
         </div>
     </section>
 
-    <section class="container section" style="padding: 100px 0;">
-        <h2 class="section-title">The Simple Valley Difference</h2>
-        <div class="difference-grid">
-            <div class="difference-card fade-in">
-                <div class="card-img-container"><img src="assets/img/beefliver.jpg" alt="Nutrient dense, grass fed beef liver"></div>
-                <h3>Grass-Fed Liver in Every Bar</h3>
-            </div>
-            <div class="difference-card fade-in" style="--delay: 0.1s;">
-                <div class="card-img-container"><img src="assets/img/Ingredients_IMG2.png" alt="beef liver protein bar made with whole-food paleo ingredients from Simple Valley"></div>
-                <h3>Ultra-Clean Ingredients</h3>
-            </div>
-            <div class="difference-card fade-in" style="--delay: 0.2s;">
-                <div class="card-img-container"><img src="assets/img/macros1.png" alt="beef liver bar with 20 grams protein and animal based ingredients"></div>
-                <h3>Exceptional Macros</h3>
-            </div>
-            <div class="difference-card fade-in" style="--delay: 0.3s;">
-                <div class="card-img-container"><img src="assets/img/nonuts1.png" alt="Beef liver bar with no nuts, seeds, natural flavors, or artificial flavors or preservatives"></div>
-                <h3>No Nuts or Seeds, Ever</h3>
+    <section class="difference-parallax">
+        <div class="difference-overlay">
+            <div class="container">
+                <h2 class="section-title light">The Simple Valley Difference</h2>
+                <div class="difference-grid-boxes">
+                    <div class="diff-box fade-in">
+                        <h3>Grass-Fed Liver in Every Bar</h3>
+                    </div>
+                    <div class="diff-box fade-in" style="--delay: 0.1s;">
+                        <h3>Ultra-Clean Ingredients</h3>
+                    </div>
+                    <div class="diff-box fade-in" style="--delay: 0.2s;">
+                        <h3>Exceptional Macros</h3>
+                    </div>
+                    <div class="diff-box fade-in" style="--delay: 0.3s;">
+                        <h3>No Nuts or Seeds, Ever</h3>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -174,13 +173,17 @@
 <div id="newsletterModal" class="modal">
     <div class="modal-content">
         <span class="close-modal">&times;</span>
-        <h2 style="color: #D97706; margin-bottom: 10px;">The Founder's Batch</h2>
-        <p style="color: #4B5563; margin-bottom: 24px;">We are shipping our first batch on Dec 31st. Join the list for updates and early access.</p>
-        <form class="subscribe-form" style="display: block; max-width: 100%;">
-            <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px;">
-            <button type="submit" class="button" style="width: 100%;">Join the List</button>
-        </form>
-        <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 16px;">No spam. Just protein.</p>
+        <div class="modal-left">
+            <h2>Join the Tribe + Get 10% OFF</h2>
+            <p>Join the Founder's List for exclusive early access and savings.</p>
+            <form class="subscribe-form" style="display: block; max-width: 100%;">
+                <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px; border: 2px solid #000;">
+                <button type="submit" class="button" style="width: 100%; background-color: #D97706; font-weight: 800;">Unlock My Discount</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
+        </div>
+        <div class="modal-right">
+            </div>
     </div>
 </div>
 
