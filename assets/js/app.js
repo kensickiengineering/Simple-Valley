@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- GLOBAL SITE-WIDE FUNCTIONS --- //
+    // --- GLOBAL --- //
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
@@ -26,30 +26,75 @@ document.addEventListener('DOMContentLoaded', function() {
         fadeInElements.forEach(element => observer.observe(element));
     }
 
-    // --- INGREDIENTS & FAQ ACCORDION LOGIC --- //
+    // --- POPUP & FLOATING BUTTON LOGIC --- //
+    const modal = document.getElementById('newsletterModal');
+    const closeModal = document.querySelector('.close-modal');
+    const joinTribeBtn = document.getElementById('joinTribeBtn');
+    const hideFloatingBtn = document.getElementById('hideFloatingBtn');
+
+    // 1. Initial Popup Show (Delay 6s)
+    if (modal && !localStorage.getItem('simpleValleyPopupShown')) {
+        setTimeout(() => {
+            modal.style.display = 'block';
+            if(joinTribeBtn) joinTribeBtn.style.display = 'none'; // Hide button when modal is open
+        }, 6000); 
+    } else {
+        // If popup already seen, show the floating button
+        if(joinTribeBtn) joinTribeBtn.style.display = 'flex';
+    }
+
+    // 2. Close Modal triggers
+    function closePopup() {
+        modal.style.display = 'none';
+        localStorage.setItem('simpleValleyPopupShown', 'true');
+        if(joinTribeBtn && !sessionStorage.getItem('hideTribeBtn')) {
+            joinTribeBtn.style.display = 'flex'; // Show floating button
+        }
+    }
+
+    if (closeModal) closeModal.addEventListener('click', closePopup);
+    window.addEventListener('click', (e) => { if (e.target == modal) closePopup(); });
+
+    // 3. Floating Button Trigger
+    if (joinTribeBtn) {
+        joinTribeBtn.addEventListener('click', (e) => {
+            // Prevent clicking the X from triggering the modal
+            if(e.target !== hideFloatingBtn) {
+                modal.style.display = 'block';
+                joinTribeBtn.style.display = 'none';
+            }
+        });
+    }
+
+    // 4. Hide Floating Button (X)
+    if (hideFloatingBtn) {
+        hideFloatingBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            joinTribeBtn.style.display = 'none';
+            sessionStorage.setItem('hideTribeBtn', 'true'); // Remember for session
+        });
+    }
+
+    // --- ACCORDION LOGIC --- //
     function initializeAccordion(selector, headerClass, contentClass) {
         const items = document.querySelectorAll(selector);
-        if (items.length > 0) {
-            items.forEach(item => {
-                const header = item.querySelector(headerClass);
-                if (header) {
-                    header.addEventListener('click', () => {
-                        item.classList.toggle('active');
-                        const content = item.querySelector(contentClass);
-                        if (content && item.classList.contains('active')) {
-                            content.style.maxHeight = content.scrollHeight + 'px';
-                        } else if (content) {
-                            content.style.maxHeight = null;
-                        }
-                    });
-                }
-            });
-        }
+        items.forEach(item => {
+            const header = item.querySelector(headerClass);
+            if (header) {
+                header.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                    const content = item.querySelector(contentClass);
+                    if (content) {
+                        content.style.maxHeight = item.classList.contains('active') ? content.scrollHeight + 'px' : null;
+                    }
+                });
+            }
+        });
     }
     initializeAccordion('.accordion-item', '.accordion-header', '.accordion-content');
     initializeAccordion('.ingredient-card', '.ingredient-header', '.ingredient-desc');
 
-    // --- CART & E-COMMERCE LOGIC --- //
+    // --- CART LOGIC --- //
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
     const cartBtns = document.querySelectorAll('.cart-btn');
@@ -61,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function openCart() { if(cartSidebar) cartSidebar.classList.add('active'); if(cartOverlay) cartOverlay.classList.add('active'); }
     function closeCart() { if(cartSidebar) cartSidebar.classList.remove('active'); if(cartOverlay) cartOverlay.classList.remove('active'); }
 
-    if (cartSidebar && cartOverlay && closeCartBtn && cartBtns.length > 0) {
-        cartBtns.forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); openCart(); }));
+    if (cartSidebar) {
+        cartBtns.forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); openCart(); }));
         closeCartBtn.addEventListener('click', closeCart);
         cartOverlay.addEventListener('click', closeCart);
     }
@@ -114,89 +159,61 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateCartUI();
 
-    // --- SHOP PAGE SPECIFIC (BUNDLES + GALLERY) --- //
-    if (document.querySelector('.shop-layout')) {
-        const mainImg = document.getElementById('mainImg');
-        const thumbs = document.querySelectorAll('.thumb');
-        
-        // Gallery Logic
-        if (mainImg && thumbs.length > 0) {
-            thumbs.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    thumbs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    mainImg.src = this.querySelector('img').src;
-                });
-            });
-        }
+    // --- BUNDLE & SHOP LOGIC --- //
+    const bundleOptions = document.querySelectorAll('.bundle-option');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    let currentSelection = {
+        qty: 1, price: 79.99, title: 'The Simple Valley Bar - 2 Boxes', priceId: 'price_1SgqJDLXAfa3XjXDkbgFa7Ka'
+    };
 
-        // Bundle Logic
-        const bundleOptions = document.querySelectorAll('.bundle-option');
-        const addToCartBtn = document.getElementById('addToCartBtn');
-        let currentSelection = {
-            qty: 1, 
-            price: 79.99,
-            title: 'The Simple Valley Bar - 2 Boxes (24 Bars)',
-            priceId: 'price_1SgqJDLXAfa3XjXDkbgFa7Ka' // Default 2 Box ID
-        };
-
-        if (bundleOptions.length > 0) {
-            bundleOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // Update Visuals
-                    bundleOptions.forEach(opt => opt.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Update Data
-                    currentSelection.price = this.dataset.price;
-                    currentSelection.priceId = this.dataset.stripeId;
-                    const bundleTitle = this.querySelector('.bundle-title').innerText;
-                    currentSelection.title = `The Simple Valley Bar - ${bundleTitle}`;
-                    
-                    if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${currentSelection.price}`;
-                });
-            });
-        }
-
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-                const product = { 
-                    id: currentSelection.priceId,
-                    title: currentSelection.title, 
-                    price: parseFloat(currentSelection.price),
-                    image: 'assets/img/SecondaryPic2.png',
-                    priceId: currentSelection.priceId,
-                    qty: 1
-                };
+    if (bundleOptions.length > 0) {
+        bundleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                bundleOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
                 
-                const existingProduct = cart.find(p => p.id === product.id);
-                if (existingProduct) {
-                    existingProduct.qty += 1;
-                } else {
-                    cart.push(product);
-                }
+                currentSelection.price = this.dataset.price;
+                currentSelection.priceId = this.dataset.stripeId;
+                const bundleTitle = this.querySelector('.bundle-title').innerText;
+                currentSelection.title = `The Simple Valley Bar - ${bundleTitle}`;
                 
-                saveCart();
-                updateCartUI();
-                openCart();
-
-                const originalText = this.textContent;
-                this.textContent = 'Added! ✓';
-                this.classList.add('added');
-                this.disabled = true;
-                setTimeout(() => {
-                    this.textContent = originalText;
-                    this.classList.remove('added');
-                    this.disabled = false;
-                }, 2000);
+                if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${currentSelection.price}`;
             });
-        }
+        });
+    }
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            const product = { 
+                id: currentSelection.priceId,
+                title: currentSelection.title, 
+                price: parseFloat(currentSelection.price),
+                image: 'assets/img/SecondaryPic2.png',
+                priceId: currentSelection.priceId,
+                qty: 1
+            };
+            const existingProduct = cart.find(p => p.id === product.id);
+            if (existingProduct) { existingProduct.qty += 1; } else { cart.push(product); }
+            
+            saveCart();
+            updateCartUI();
+            openCart();
+
+            const originalText = this.textContent;
+            this.textContent = 'Added! ✓';
+            this.classList.add('added');
+            this.disabled = true;
+            setTimeout(() => {
+                this.textContent = originalText;
+                this.classList.remove('added');
+                this.disabled = false;
+            }, 2000);
+        });
     }
 
     // --- CHECKOUT LOGIC --- //
     const checkoutBtn = document.getElementById('checkout-button');
     if (checkoutBtn) {
-        // Use cloning to ensure no duplicate listeners if code runs twice
         const newBtn = checkoutBtn.cloneNode(true);
         checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
         newBtn.addEventListener('click', async () => {
@@ -217,23 +234,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // --- NEWSLETTER POPUP LOGIC --- //
-    const modal = document.getElementById('newsletterModal');
-    const closeModal = document.querySelector('.close-modal');
-    if (modal && !localStorage.getItem('popupShown')) {
-        setTimeout(() => { modal.style.display = 'block'; }, 6000);
-    }
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            modal.style.display = 'none';
-            localStorage.setItem('popupShown', 'true');
-        });
-    }
-    window.addEventListener('click', (e) => {
-        if (e.target == modal) {
-            modal.style.display = 'none';
-            localStorage.setItem('popupShown', 'true');
-        }
-    });
 });
