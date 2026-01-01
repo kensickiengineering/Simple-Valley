@@ -75,6 +75,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // --- GALLERY LOGIC (FIXED) --- //
+    const galleryContainer = document.querySelector('.product-gallery');
+    if (galleryContainer) {
+        const mainImg = galleryContainer.querySelector('#mainImg');
+        const thumbs = galleryContainer.querySelectorAll('.thumb');
+        
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', (e) => {
+                // Remove active from all
+                thumbs.forEach(t => t.classList.remove('active'));
+                // Add active to clicked (using currentTarget handles inner img clicks)
+                const clickedThumb = e.currentTarget;
+                clickedThumb.classList.add('active');
+                
+                // Update main image
+                const newSrc = clickedThumb.querySelector('img').src;
+                if (mainImg && newSrc) {
+                    mainImg.src = newSrc;
+                }
+            });
+        });
+    }
+
     // --- ACCORDION LOGIC --- //
     function initializeAccordion(selector, headerClass, contentClass) {
         const items = document.querySelectorAll(selector);

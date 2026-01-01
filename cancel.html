@@ -126,7 +126,25 @@
             <button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button>
         </div>
     </div>
-    
+    <div id="joinTribeBtn" class="floating-tribe-btn">
+    JOIN THE TRIBE <span class="close-float" id="hideFloatingBtn">x</span>
+</div>
+
+<div id="newsletterModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-left">
+            <h2>Join the Tribe + Get 10% OFF</h2>
+            <p>Join the Founder's List for exclusive early access and savings.</p>
+            <form class="subscribe-form" style="display: block; max-width: 100%;">
+                <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px; border: 2px solid #000;">
+                <button type="submit" class="button" style="width: 100%; background-color: #D97706; font-weight: 800;">Unlock My Discount</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
+        </div>
+        <div class="modal-right"></div>
+    </div>
+</div>
     <script src="assets/js/app.js"></script>
 </body>
 </html>
