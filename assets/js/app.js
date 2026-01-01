@@ -257,4 +257,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+// --- SOCIAL CAROUSEL SCROLL LOGIC --- //
+    const track = document.getElementById('communityTrack');
+    const btnLeft = document.getElementById('scrollLeftBtn');
+    const btnRight = document.getElementById('scrollRightBtn');
+
+    if (track && btnLeft && btnRight) {
+        btnLeft.addEventListener('click', () => {
+            track.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+        btnRight.addEventListener('click', () => {
+            track.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    }
 });
