@@ -120,41 +120,27 @@
         </button>
 
         <div class="community-track" id="communityTrack">
-            <div class="social-card">
-                <img src="assets/img/ProductImage1.png" alt="Video Thumb">
-                <div class="play-overlay">
-                    <div class="play-icon">▶</div>
-                </div>
-                <div class="social-handle">@simplevalleybar</div>
-            </div>
-            <div class="social-card">
-                <img src="assets/img/SecondaryPic2.png" alt="Video Thumb">
-                <div class="play-overlay">
-                    <div class="play-icon">▶</div>
-                </div>
-                <div class="social-handle">@customer_mike</div>
-            </div>
-            <div class="social-card">
-                <img src="assets/img/beefliver.jpg" alt="Video Thumb">
-                <div class="play-overlay">
-                    <div class="play-icon">▶</div>
-                </div>
-                <div class="social-handle">@health_warrior</div>
-            </div>
-            <div class="social-card">
-                <img src="assets/img/Ingredients2.png" alt="Video Thumb">
-                <div class="play-overlay">
-                    <div class="play-icon">▶</div>
-                </div>
-                <div class="social-handle">@simplevalleybar</div>
-            </div>
-            <div class="social-card">
-                <img src="assets/img/ProductImage1.png" alt="Video Thumb">
-                <div class="play-overlay">
-                    <div class="play-icon">▶</div>
-                </div>
-                <div class="social-handle">@fitness_jess</div>
-            </div>
+    <div class="social-card" data-video="assets/videos/video1.mp4">
+        <img src="assets/img/ProductImage1.png" alt="Video Thumb">
+        <div class="play-overlay"><div class="play-icon">▶</div></div>
+        <div class="social-handle">@simplevalleybar</div>
+    </div>
+    <div class="social-card" data-video="assets/videos/video2.mp4">
+        <img src="assets/img/SecondaryPic2.png" alt="Video Thumb">
+        <div class="play-overlay"><div class="play-icon">▶</div></div>
+        <div class="social-handle">@customer_mike</div>
+    </div>
+    <div class="social-card" data-video="assets/videos/video3.mp4">
+        <img src="assets/img/beefliver.jpg" alt="Video Thumb">
+        <div class="play-overlay"><div class="play-icon">▶</div></div>
+        <div class="social-handle">@health_warrior</div>
+    </div>
+    <div class="social-card" data-video="assets/videos/video4.mp4">
+        <img src="assets/img/Ingredients2.png" alt="Video Thumb">
+        <div class="play-overlay"><div class="play-icon">▶</div></div>
+        <div class="social-handle">@simplevalleybar</div>
+    </div>
+</div>
         </div>
     </div>
 </section>
@@ -193,6 +179,15 @@
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
         </div>
         <div class="modal-right"></div>
+    </div>
+</div>
+<div id="videoModal" class="modal" style="background-color: rgba(0,0,0,0.9);">
+    <div class="modal-content video-content-wrapper">
+        <span class="close-modal close-video">&times;</span>
+        <video id="mainVideoPlayer" controls style="width: 100%; height: auto; border-radius: 12px; max-height: 80vh;">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
 </div>
 

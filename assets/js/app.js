@@ -270,4 +270,44 @@ document.addEventListener('DOMContentLoaded', function() {
             track.scrollBy({ left: 300, behavior: 'smooth' });
         });
     }
+// --- VIDEO MODAL LOGIC --- //
+    const videoModal = document.getElementById('videoModal');
+    const videoPlayer = document.getElementById('mainVideoPlayer');
+    const socialCards = document.querySelectorAll('.social-card');
+    const closeVideoBtn = document.querySelector('.close-video');
+
+    if (videoModal && videoPlayer) {
+        // Open Video
+        socialCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const videoSrc = card.getAttribute('data-video');
+                if (videoSrc) {
+                    videoPlayer.src = videoSrc; // Load the video
+                    videoModal.style.display = 'block';
+                    videoPlayer.play(); // Auto-play when opened
+                } else {
+                    console.log("No video source found for this card.");
+                }
+            });
+        });
+
+        // Close Video Function
+        const closeVideo = () => {
+            videoModal.style.display = 'none';
+            videoPlayer.pause(); // Stop playing
+            videoPlayer.src = ""; // Reset source
+        };
+
+        // Close on X button
+        if (closeVideoBtn) {
+            closeVideoBtn.addEventListener('click', closeVideo);
+        }
+
+        // Close on click outside
+        window.addEventListener('click', (e) => {
+            if (e.target == videoModal) {
+                closeVideo();
+            }
+        });
+    }
 });

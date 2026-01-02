@@ -466,3 +466,32 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height
     font-size: 0.9rem;
     letter-spacing: 0.5px;
 }
+/* --- VIDEO PLAYER MODAL STYLES --- */
+.video-content-wrapper {
+    background-color: transparent !important; /* Removes white box */
+    box-shadow: none !important;
+    max-width: 800px; /* Wider for video */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.close-video {
+    color: white;
+    top: -40px;
+    right: 0;
+    font-size: 40px;
+    opacity: 0.8;
+    z-index: 1001;
+}
+
+.close-video:hover {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* Adjust play icon size for mobile */
+@media (max-width: 768px) {
+    .video-content-wrapper { width: 100%; margin: 40% auto; }
+}
