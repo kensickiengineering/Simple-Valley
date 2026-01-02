@@ -270,32 +270,31 @@ document.addEventListener('DOMContentLoaded', function() {
             track.scrollBy({ left: 300, behavior: 'smooth' });
         });
     }
-// --- VIDEO MODAL LOGIC --- //
+// --- YOUTUBE MODAL LOGIC --- //
     const videoModal = document.getElementById('videoModal');
-    const videoPlayer = document.getElementById('mainVideoPlayer');
+    const youtubePlayer = document.getElementById('youtubePlayer');
     const socialCards = document.querySelectorAll('.social-card');
     const closeVideoBtn = document.querySelector('.close-video');
 
-    if (videoModal && videoPlayer) {
+    if (videoModal && youtubePlayer) {
         // Open Video
         socialCards.forEach(card => {
             card.addEventListener('click', () => {
-                const videoSrc = card.getAttribute('data-video');
-                if (videoSrc) {
-                    videoPlayer.src = videoSrc; // Load the video
+                const videoId = card.getAttribute('data-youtube-id');
+                if (videoId) {
+                    // Construct embed URL with autoplay
+                    youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
                     videoModal.style.display = 'block';
-                    videoPlayer.play(); // Auto-play when opened
                 } else {
-                    console.log("No video source found for this card.");
+                    console.log("No YouTube ID found for this card.");
                 }
             });
         });
 
-        // Close Video Function
+        // Close Video Function (Stops audio by clearing src)
         const closeVideo = () => {
             videoModal.style.display = 'none';
-            videoPlayer.pause(); // Stop playing
-            videoPlayer.src = ""; // Reset source
+            youtubePlayer.src = ""; 
         };
 
         // Close on X button

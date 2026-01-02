@@ -119,23 +119,23 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
 
-        <div class="community-track" id="communityTrack">
-    <div class="social-card" data-video="assets/videos/video1.mp4">
+<div class="community-track" id="communityTrack">
+    <div class="social-card" data-youtube-id="nfOUXq6EBEE">
         <img src="assets/img/ProductImage1.png" alt="Video Thumb">
         <div class="play-overlay"><div class="play-icon">▶</div></div>
         <div class="social-handle">@simplevalleybar</div>
     </div>
-    <div class="social-card" data-video="assets/videos/video2.mp4">
+    <div class="social-card" data-youtube-id="oCh4rp3mQNo">
         <img src="assets/img/SecondaryPic2.png" alt="Video Thumb">
         <div class="play-overlay"><div class="play-icon">▶</div></div>
         <div class="social-handle">@customer_mike</div>
     </div>
-    <div class="social-card" data-video="assets/videos/video3.mp4">
+    <div class="social-card" data-youtube-id="EWQZ3V7fSBc">
         <img src="assets/img/beefliver.jpg" alt="Video Thumb">
         <div class="play-overlay"><div class="play-icon">▶</div></div>
         <div class="social-handle">@health_warrior</div>
     </div>
-    <div class="social-card" data-video="assets/videos/video4.mp4">
+    <div class="social-card" data-youtube-id="bQ9eH43bulw">
         <img src="assets/img/Ingredients2.png" alt="Video Thumb">
         <div class="play-overlay"><div class="play-icon">▶</div></div>
         <div class="social-handle">@simplevalleybar</div>
@@ -184,10 +184,9 @@
 <div id="videoModal" class="modal" style="background-color: rgba(0,0,0,0.9);">
     <div class="modal-content video-content-wrapper">
         <span class="close-modal close-video">&times;</span>
-        <video id="mainVideoPlayer" controls style="width: 100%; height: auto; border-radius: 12px; max-height: 80vh;">
-            <source src="" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <div class="responsive-video-wrapper">
+            <iframe id="youtubePlayer" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
     </div>
 </div>
 
