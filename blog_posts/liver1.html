@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Routines for Success | Animal Based Nutrition Blog</title>
+    <meta name="description" content="Explore workout routines, nutrition hacks, and perspectives on a healthy lifestyle.">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png">
+</head>
+<body>
+
+<div class="promo-banner"><p>SAVE WITH FREE USA SHIPPING ON ALL ORDERS OVER $75!</p></div>
+
+<header class="site-header">
+    <div class="container nav-container">
+        <div class="logo-brand"><a href="index.html" class="logo-circle"><img src="assets/img/RealLogo.png" alt="SV Logo"></a><a href="index.html" class="brand-name">Simple Valley</a></div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+		<li><a href="blog.html">Routines</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+        <div class="nav-meta">
+            <a href="account.html" class="icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+            <a href="#" class="icon-btn cart-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="cart-count" id="cartCount">0</span></a>
+        </div>
+        <button class="mobile-nav-toggle"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<main>
+
+<div class="page-hero-revamped" style="background-image: url('assets/img/shark.png');">
+    <div class="hero-overlay">
+        <div class="hero-text">
+            <h1>Nature’s First Priority</h1>
+            <p style="font-size: 1.5rem; color: var(--white); font-weight: 600;">Why Predators Don't Eat Steak</p>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div style="max-width: 800px; margin: 0 auto;">
+            
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--text-dark); font-weight: 500;">Back in 2017, in the deep waters of False Bay, South Africa, great white sharks started vanishing.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                They were the architects of the ecosystem, the top of the food chain, the seemingly invincible biological machines that had survived for millions of years.
+            </p>
+	<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Their disappearance was not gradual. It was sudden, ghostly, and terrified the local marine biologists who had dedicated their lives to studying these animals.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                When their carcasses finally washed ashore, marine biologists noticed something chilling. They weren't torn to shreds in a frenzy. They were surgically intact, save for one precise incision near the pectoral fins.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                A pair of orcas had figured out how to flip the sharks upside down to paralyze them. Then, they extracted a single organ: <strong>the liver.</strong>
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Once the liver was consumed, the orcas let the rest of the massive shark sink to the ocean floor. They discarded hundreds of pounds of muscle meat as waste.
+            </p>
+            
+            <div style="background-color: var(--background-light); padding: 24px; border-left: 4px solid var(--primary-color); border-radius: 0 12px 12px 0; margin: 2rem 0;">
+                <p style="margin: 0; font-weight: 600; color: var(--text-dark);">
+                    "To the apex predator, muscle meat is cheap filler. The liver is the battery."
+                </p>
+            </div>
+
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                This isn't just an orca behavior. Wolves in Yellowstone leave fresh elk meat to eat the organs first. Lions in the Serengeti give the "lion’s share" (the liver and heart) to the alpha male.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 3rem;">
+                In the wild, there are no supplements. Energy is a math equation. Predators know that liver offers the highest return on investment. Muscle meat does not.
+            </p>
+
+            <h2 style="color: var(--primary-dark); margin-top: 3rem;">The Scavenger’s Delusion</h2>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Modern humans have flipped this equation upside down. If an alien biologist looked at a modern grocery store, they would conclude that humans are scavengers.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                We prize the "filet mignon"&mdash;a piece of muscle that does little biological work&mdash;and throw away the nutrient-dense organs. We have voluntarily adopted the diet of the vulture, eating the scraps left behind by the alphas.
+            </p>
+<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                We are overfed, yet we are starving for nutrients. We have the calories, but we lack the spark.
+            </p>
+
+            <h2 style="color: var(--primary-dark); margin-top: 3rem;">The Science: Why You Need the "Spark Plug"</h2>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Why do predators prioritize liver? It’s not magic; it’s bioenergetics. Your body produces energy in the mitochondria (the power plants of your cells). To turn food into energy, your mitochondria require a specific enzyme called <em>Cytochrome c Oxidase</em>.
+            </p>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                <strong>This enzyme is copper-dependent.</strong> It physically requires copper atoms to function. Without adequate bio-available copper, your cellular engine stalls. You can flood your body with fuel (carbs/fats), but if the spark isn't there, the fuel doesn't burn cleanly. You get fatigue, brain fog, and poor recovery.
+            </p>
+
+            <div style="background-color: var(--earth-green); color: var(--white); padding: 32px; border-radius: var(--border-radius); margin: 2rem 0; text-align: center;">
+                <h3 style="color: var(--white); margin-bottom: 20px;">Beef Liver is the richest source of copper on earth.</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
+                    <div>
+                        <span style="display: block; font-size: 0.9rem; text-transform: uppercase; opacity: 0.8;">Beef Steak (100g)</span>
+                        <span style="font-size: 2rem; font-weight: 800; color: #fab1a0;">4%</span>
+                        <span style="display: block; font-size: 0.8rem;">Daily Value of Copper</span>
+                    </div>
+                    <div style="border-left: 1px solid rgba(255,255,255,0.3);">
+                        <span style="display: block; font-size: 0.9rem; text-transform: uppercase; opacity: 0.8;">Beef Liver (100g)</span>
+                        <span style="font-size: 2rem; font-weight: 800; color: var(--primary-color);">488%</span>
+                        <span style="display: block; font-size: 0.8rem;">Daily Value of Copper</span>
+                    </div>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem;">When you eat muscle meat exclusively, you are fueling a car with no spark plugs. When you eat liver, you are turning the engine on.</p>
+            </div>
+
+<h2 style="color: var(--primary-dark); margin-top: 3rem;">The Problem: The "Taste" Tax</h2>
+<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                If liver is so nutritious, why did we stop eating it?
+            </p>
+<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Two reasons: <strong>Convenience and Taste.</strong>.
+            </p>
+<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Preparing fresh liver is a hassle. It has a distinct, metallic taste that many modern palates struggle with, and the texture can be difficult to get right. We stopped eating it because it was easier to fry a steak or take a synthetic multivitamin.
+            </p>
+<p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                But a pill is not food. Synthetic vitamins lack the "food matrix"—the complex web of fats and enzymes that help your body actually absorb the nutrients. We tried to outsmart nature, and we failed.
+            </p>
+
+            <h2 style="color: var(--primary-dark); margin-top: 3rem;">The Routine: The Simple Valley Protocol</h2>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                We built Simple Valley to solve the "Taste Tax." We wanted the predator’s advantage without the hassle of butchering and cooking organs. We view our bars not just as a snack, but as a <strong>solution</strong>&mdash;a tool to reintroduce this ancient fuel into a modern workflow. Here is how to use them:.
+            </p>
+
+            <div style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 0.5rem;">1. The Morning Anchor</h3>
+                <p style="color: var(--text-light); margin-bottom: 0.5rem;"><strong>The Goal:</strong> Cognitive wakefulness and hormonal regulation.</p>
+                <p style="color: var(--text-light);"><strong>The Routine:</strong> Eat one bar within 30 minutes of waking. You get a hit of B12 for focus and protein to stabilize blood sugar, plus the copper needed to start your energy production for the day.</p>
+            </div>
+
+            <div style="margin-top: 2rem; margin-bottom: 3rem;">
+                <h3 style="margin-bottom: 0.5rem;">2. The Pre-Adventure Fuel</h3>
+                <p style="color: var(--text-light); margin-bottom: 0.5rem;"><strong>The Goal:</strong> Sustained output without the sugar crash.</p>
+                <p style="color: var(--text-light);"><strong>The Routine:</strong> Consume 30 minutes before physical activity. Unlike sugar, which spikes and crashes, the fat and protein in liver provide a "slow burn." You are feeding your muscles the Heme Iron they need to transport oxygen efficiently during exertion.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="cta-section" style="text-align: center; background-color: var(--background-light);">
+    <div class="container">
+        <h2 style="margin-bottom: 1rem;">References</h2>
+        
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            1. Frontiers Science News. Orcas seen killing young great white sharks by flipping them upside-down. <a href="https://www.frontiersin.org/news/2025/11/03/orcas-killing-young-great-white-sharks-by-flipping-upside-down-frontiers-marine-science" style="color: inherit;">https://www.frontiersin.org/news/2025/11/03/orcas-killing-young-great-white-sharks-by-flipping-upside-down-frontiers-marine-science</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            2. The Guardian. 'Awe-inspiring and harrowing': how two orcas with a taste for liver decimated the great white shark capital of the world. <a href="https://www.theguardian.com/environment/2025/jan/23/south-africa-gansbaai-marine-biology-apex-predators-orcas-conquer-great-white-sharks-seals-penguins-trophic-cascade-aoe" style="color: inherit;">https://www.theguardian.com/environment/2025/jan/23/south-africa-gansbaai-marine-biology-apex-predators-orcas-conquer-great-white-sharks-seals-penguins-trophic-cascade-aoe</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            3. Towner, A. V.; Kock, A. A.; Stopforth, C.; Hurwitz, D.; Elwen, S. H. Direct observation of killer whales preying on white sharks and evidence of a flight response. <em>Afr. J. Mar. Sci.</em> <strong>2022</strong>, <em>44</em>, 265–271. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10078210/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC10078210/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            4. Hayward, M. W.; Hayward, G. J.; Tambling, C. J.; Kerley, G. I. H. Do Lions Panthera leo Actively Select Prey or Do Prey Preferences Simply Reflect Chance Responses via Evolutionary Adaptations to Optimal Foraging? <em>PLoS One</em> <strong>2011</strong>, <em>6</em> (9), e23607. <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0023607" style="color: inherit;">https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0023607</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            5. Londolozi Blog. Feeding Hierarchies in Action: A Lion Pride's Power Struggle. <a href="https://blog.londolozi.com/2025/01/07/feeding-hierarchies-in-action-a-lion-prides-power-struggle/" style="color: inherit;">https://blog.londolozi.com/2025/01/07/feeding-hierarchies-in-action-a-lion-prides-power-struggle/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            6. Lion Landscapes. Diet & Feeding. <a href="https://www.lionlandscapes.org/lion-diet" style="color: inherit;">https://www.lionlandscapes.org/lion-diet</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            7. Stahler, D. R.; Smith, D. W.; Guernsey, D. S. Foraging and feeding ecology of the gray wolf (Canis lupus): lessons from Yellowstone National Park, Wyoming, USA. <em>J. Nutr.</em> <strong>2006</strong>, <em>136</em> (7), 1923S–1926S. <a href="https://pubmed.ncbi.nlm.nih.gov/16772460/" style="color: inherit;">https://pubmed.ncbi.nlm.nih.gov/16772460/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            8. Shrotriya, S.; Reshamwala, H. S.; Lyngdoh, S.; Jhala, Y. V.; Habib, B. Feeding Patterns of Three Widespread Carnivores—The Wolf, Snow Leopard, and Red Fox—in the Trans-Himalayan Landscape of India. <em>Front. Ecol. Evol.</em> <strong>2022</strong>, <em>10</em>, 815996. <a href="https://www.frontiersin.org/journals/ecology-and-evolution/articles/10.3389/fevo.2022.815996/full" style="color: inherit;">https://www.frontiersin.org/journals/ecology-and-evolution/articles/10.3389/fevo.2022.815996/full</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            9. Mello, V. S.; Godoy, J. L.; Campos, A. C. History of liver anatomy: Mesopotamian liver clay models. <em>HPB (Oxford)</em> <strong>2013</strong>, <em>15</em> (4), 322–323. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3608988/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC3608988/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            10. Things That Talk. De'liver' the message - Clay model of a sheep's liver. <a href="https://thingsthattalk.net/en/t/ttt:TaOntS/m/deliver-the-message" style="color: inherit;">https://thingsthattalk.net/en/t/ttt:TaOntS/m/deliver-the-message</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            11. GreekReporter.com. Liver: The Seat of Emotions, According to Ancient Greeks. <a href="https://greekreporter.com/2024/02/08/liver-emotions-ancient-greeks/" style="color: inherit;">https://greekreporter.com/2024/02/08/liver-emotions-ancient-greeks/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            12. Riva, M. A.; et al. “The city of Hepar”: Rituals, gastronomy, and politics at the origins of the modern names for the liver. <em>J. Hepatol.</em> <strong>2011</strong>, <em>55</em> (5), 1132–1136. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3747976/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC3747976/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            13. The Ethical Butcher. The real superfood – beef liver. <a href="https://ethicalbutcher.co.uk/blogs/journal/the-real-superfood" style="color: inherit;">https://ethicalbutcher.co.uk/blogs/journal/the-real-superfood</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            14. Evans-Pritchard, E. E. Nuer Religion. <em>eHRAF World Cultures</em>. <a href="https://ehrafworldcultures.yale.edu/cultures/fj22/documents/016" style="color: inherit;">https://ehrafworldcultures.yale.edu/cultures/fj22/documents/016</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            15. Lotz in Translation. Quotes & Commentary #29: Evans-Pritchard. <a href="https://lotzintranslation.com/2016/12/05/quotes-commentary-29-evans-pritchard/" style="color: inherit;">https://lotzintranslation.com/2016/12/05/quotes-commentary-29-evans-pritchard/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            16. Prairie Creek Pastures. Liver - I'm Convinced! <a href="https://prairiecreekpastures.com/blog/liver-i-m-convinced" style="color: inherit;">https://prairiecreekpastures.com/blog/liver-i-m-convinced</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            17. Weston A. Price Foundation. Vitamin A for Fetal Development. <a href="https://www.aipro.info/wp/wp-content/uploads/2017/08/vitaminA.pdf" style="color: inherit;">https://www.aipro.info/wp/wp-content/uploads/2017/08/vitaminA.pdf</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            18. Psychology Today. The Scarlet Nutrient. <a href="https://cdn2.psychologytoday.com/assets/2024-08/The%20Scarlet%20Nutrient%20-%20Weston%20A%20Price.pdf" style="color: inherit;">https://cdn2.psychologytoday.com/assets/2024-08/The%20Scarlet%20Nutrient%20-%20Weston%20A%20Price.pdf</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            19. Ruiz, L. M.; Libedinsky, A.; Elorza, A. A. The mitochondrion: a central architect of copper homeostasis. <em>Metallomics</em> <strong>2017</strong>, <em>9</em> (11), 1501–1512. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5688007/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC5688007/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            20. Ahmad, M.; Wolberg, A.; Kahwaji, C. I. Biochemistry, Electron Transport Chain. In <em>StatPearls [Internet]</em>; StatPearls Publishing: Treasure Island (FL), 2025. <a href="https://www.ncbi.nlm.nih.gov/books/NBK526105/" style="color: inherit;">https://www.ncbi.nlm.nih.gov/books/NBK526105/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            21. AK Lectures. Complex IV of Electron Transport Chain. <a href="https://aklectures.com/lecture/oxidative-phosphorylation/complex-iv-of-electron-transport-chain" style="color: inherit;">https://aklectures.com/lecture/oxidative-phosphorylation/complex-iv-of-electron-transport-chain</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            22. Baker, Z. N.; et al. Getting out what you put in: copper in mitochondria and its impacts on human disease. <em>Biochim. Biophys. Acta Mol. Cell Res.</em> <strong>2021</strong>, <em>1868</em> (1), 118882. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7680424/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC7680424/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            23. Ruiz, L. M.; et al. Role of Copper on Mitochondrial Function and Metabolism. <em>Front. Mol. Biosci.</em> <strong>2021</strong>, <em>8</em>, 711227. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8421569/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC8421569/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            24. Shim, D.; Han, J. Coordination chemistry of mitochondrial copper metalloenzymes: exploring implications for copper dyshomeostasis in cell death. <em>BMB Rep.</em> <strong>2023</strong>, <em>56</em> (11), 575–583. <a href="https://www.bmbreports.org/journal/view.html?uid=1902&vmd=Full" style="color: inherit;">https://www.bmbreports.org/journal/view.html?uid=1902&vmd=Full</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            25. Tang, G. Bioconversion of dietary provitamin A carotenoids to vitamin A in humans. <em>Am. J. Clin. Nutr.</em> <strong>2010</strong>, <em>91</em> (5), 1468S–1473S. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2854912/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC2854912/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            26. Lin, Y.; et al. Variability of the conversion of beta-carotene to vitamin A in women measured by using a double-tracer study design. <em>Am. J. Clin. Nutr.</em> <strong>2000</strong>, <em>71</em> (6), 1545–1554. <a href="https://pubmed.ncbi.nlm.nih.gov/10837297/" style="color: inherit;">https://pubmed.ncbi.nlm.nih.gov/10837297/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            27. Haskell, M. J. A review of vitamin A equivalency of β-carotene in various food matrices for human consumption. <em>Br. J. Nutr.</em> <strong>2012</strong>, <em>108</em> (S2), S80–S89. <a href="https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/review-of-vitamin-a-equivalency-of-carotene-in-various-food-matrices-for-human-consumption/2F833B9340DA0175C93363600ECBFEED" style="color: inherit;">https://www.cambridge.org/core/journals/british-journal-of-nutrition/article/review-of-vitamin-a-equivalency-of-carotene-in-various-food-matrices-for-human-consumption/2F833B9340DA0175C93363600ECBFEED</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            28. Novotny, J. A.; et al. β-Carotene Conversion to Vitamin A Decreases As the Dietary Dose Increases in Humans. <em>J. Nutr.</em> <strong>2010</strong>, <em>140</em> (5), 915–918. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2855261/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC2855261/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            29. APE Nutrition. Nature's Multivitamin - The Resurgence of Beef Liver. <a href="https://apenutrition.co.uk/blogs/blog/natures-multivitamin-the-resurgence-of-beef-liver-by-hayley-mcalinden-registered-nutritionist" style="color: inherit;">https://apenutrition.co.uk/blogs/blog/natures-multivitamin-the-resurgence-of-beef-liver-by-hayley-mcalinden-registered-nutritionist</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            30. National Heart, Lung, and Blood Institute. Say what? Scientists claim red meat and white meat can have equal effects on blood cholesterol. <a href="https://www.nhlbi.nih.gov/news/2019/say-what-scientists-claim-red-meat-and-white-meat-can-have-equal-effects-blood" style="color: inherit;">https://www.nhlbi.nih.gov/news/2019/say-what-scientists-claim-red-meat-and-white-meat-can-have-equal-effects-blood</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            31. UC San Francisco. Archive: Red and White Meats Are Equally Bad for Cholesterol. <a href="https://www.ucsf.edu/news/2019/06/414606/archive-red-and-white-meats-are-equally-bad-cholesterol" style="color: inherit;">https://www.ucsf.edu/news/2019/06/414606/archive-red-and-white-meats-are-equally-bad-cholesterol</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            32. Teicholz, N. A short history of saturated fat: the making and unmaking of a scientific consensus. <em>Curr. Opin. Endocrinol. Diabetes Obes.</em> <strong>2023</strong>, <em>30</em> (1), 65–71. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9794145/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC9794145/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            33. Yale School of Medicine. Cholesterol: Red Meat Vs. White Meat. <a href="https://medicine.yale.edu/news-article/cholesterol-red-meat-vs-white-meat/" style="color: inherit;">https://medicine.yale.edu/news-article/cholesterol-red-meat-vs-white-meat/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            34. Centers for Disease Control and Prevention. Second Nutrition Report At-A-Glance. <a href="https://www.cdc.gov/nutrition-report/media/2nd-nutrition-report_508_at-a-glance.pdf" style="color: inherit;">https://www.cdc.gov/nutrition-report/media/2nd-nutrition-report_508_at-a-glance.pdf</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            35. Linus Pauling Institute. Micronutrient Inadequacies in the US Population: an Overview. <a href="https://lpi.oregonstate.edu/mic/micronutrient-inadequacies/overview" style="color: inherit;">https://lpi.oregonstate.edu/mic/micronutrient-inadequacies/overview</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            36. National Geographic. Liver problems linked to supplement use are on the rise—here's why. <a href="https://www.nationalgeographic.com/science/article/excess-dietary-supplements-health-risks" style="color: inherit;">https://www.nationalgeographic.com/science/article/excess-dietary-supplements-health-risks</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            37. Discover Magazine. The Inuit Paradox. <a href="https://www.discovermagazine.com/the-inuit-paradox-2576" style="color: inherit;">https://www.discovermagazine.com/the-inuit-paradox-2576</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            38. Forks Over Knives. Extreme Nutrition: The Diet of Eskimos. <a href="https://www.forksoverknives.com/wellness/extreme-nutrition-the-diet-of-eskimos/" style="color: inherit;">https://www.forksoverknives.com/wellness/extreme-nutrition-the-diet-of-eskimos/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            39. Mullie, P.; Deliens, T.; Clarys, P. Vitamin C in East-Greenland traditional nutrition: a reanalysis of the Høygaard nutritional data (1936-1937). <em>Int. J. Circumpolar Health</em> <strong>2021</strong>, <em>80</em> (1), 1951471. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8266228/" style="color: inherit;">https://pmc.ncbi.nlm.nih.gov/articles/PMC8266228/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            40. Physical Culture Study. Forgotten Bodybuilding Supplements: Desiccated Liver. <a href="https://physicalculturestudy.com/2017/08/28/forgotten-bodybuilding-supplements-desiccated-liver/" style="color: inherit;">https://physicalculturestudy.com/2017/08/28/forgotten-bodybuilding-supplements-desiccated-liver/</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            41. U.S. Department of Agriculture. Beef, variety meats and by-products, liver, raw (100g). FoodData Central. <a href="https://fdc.nal.usda.gov/fdc-app.html#/food-details/168626/nutrients" style="color: inherit;">https://fdc.nal.usda.gov/fdc-app.html#/food-details/168626/nutrients</a>
+        </p>
+
+        <p style="max-width: 600px; margin: 0 auto 1rem; color: var(--text-light); text-align: left; word-break: break-word;">
+            42. U.S. Department of Agriculture. Beef, top sirloin, steak, raw (100g). FoodData Central. <a href="https://fdc.nal.usda.gov/fdc-app.html#/food-details/100379/nutrients" style="color: inherit;">https://fdc.nal.usda.gov/fdc-app.html#/food-details/100379/nutrients</a>
+        </p>
+    </div>
+</section>
+
+
+    <section class="comparison-section fade-in">
+        <h2 class="section-title">Appendix: Organ vs. Muscle Meat Nutrient Comparison</h2>
+        <div class="comp-table-wrapper">
+            <table class="comp-table">
+                <thead><tr><th>Feature</th><th>100g Beef Liver</th><th>100g Beef Steak</th><th>The Organ Advantage</th></tr></thead>
+                <tbody>
+                    <tr><td>Vitamin B12</td><td class="yes">59.3 mcg (988% DV)</td><td class="no">1.5 mcg (25% DV)</td><td><strong>40x More</strong> - Essential for energy & brain function.</td></tr>
+                    <tr><td>Copper</td><td class="yes">9.8 mg (488% DV)</td><td class="no">0.08 mg (4% DV)</td><td><strong>122x More</strong> - The "Spark Plug" for Mitochondria.</td></tr>
+                    <tr><td>Vitamin A (Retinol)</td><td class="yes">16,899 IU (338% DV)</td><td class="no">0 IU (0% DV)</td><td><strong>Infinite Advantage</strong> - Muscle meat has virtually no Vitamin A.</td></tr>
+                    <tr><td>Folate (B9)</td><td class="yes">290 mcg (72% DV)</td><td class="no">10 mcg (2% DV)</td><td><strong>29x More</strong> - Muscle meat has virtually no Vitamin A.</td></tr>
+                    <tr><td>Riboflavin (B2)</td><td class="yes">2.8 mg (162% DV)</td><td class="no">0.2 mg (12% DV)</td><td><strong>14x More</strong> - Key for metabolic efficiency.</td></tr>
+                    <tr><td>Choline</td><td class="yes">418 mg (76% DV)</td><td class="no">100 mg (18% DV)</td><td><strong>4x More</strong> - Critical for brain & membrane health.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<div id="joinTribeBtn" class="floating-tribe-btn">
+    JOIN THE TRIBE <span class="close-float" id="hideFloatingBtn">x</span>
+</div>
+
+<div id="newsletterModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-left">
+            <h2>Join the Tribe + Get 10% OFF</h2>
+            <p>Join the Founder's List for exclusive early access and savings.</p>
+            <form class="subscribe-form" style="display: block; max-width: 100%;">
+                <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px; border: 2px solid #000;">
+                <button type="submit" class="button" style="width: 100%; background-color: #D97706; font-weight: 800;">Unlock My Discount</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
+        </div>
+        <div class="modal-right"></div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+		<li><a href="blog.html">Routines</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-col subscribe-col">
+            <h4>Subscribe to our Newsletter</h4>
+<form class="subscribe-form" action="https://ed77f94d.sibforms.com/serve/MUIFAAP_gcvpkUblNcbmwAmTTH4n1nSHiAfaGcDdNnmYq-86dGj9sWcAd9nqW8CisP2-ZfcdoEhQH3i3R3le4URqoso6kIfmKD_RJDilssGAteOtKkUIqMgXa9x1DSoV20CSrhbEXBDZNzT5ek7TkhAAmjsp_yRCM03xVUfVHEemoWyrg0uLDn5bTDDjzHWUqyR5SbTUayg3cTcMSQ==" method="GET" target="_blank">
+                <input type="email" placeholder="Your email" aria-label="Email" required>
+                <button type="submit" class="button">Subscribe</button>
+            </form>
+            <div class="social-links">
+                <a href="https://www.instagram.com/simplevalleybar?igsh=aTQyenNmenR6eHR5&utm_source=qr" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://www.facebook.com/share/15iTsHbZvu/?mibextid=wwXIfr" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://www.tiktok.com/@simplevalleybar?_t=ZT-90TAgAyyiYh&_r=1" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a4 4 0 1 1-4-4v12a4 4 0 1 1-4-4"></path></svg>
+                </a>
+                <a href="https://www.youtube.com/channel/UC1gO-5Nv1vqAFyLkLshncaQ" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                </a>
+                <a href="https://x.com/simplevalleybar?s=21" aria-label="X" target="_blank" rel="noopener noreferrer">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p class="copyright-disclaimer">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+        <p class="copyright">© <span id="year"></span> Simple Valley. All Rights Reserved.</p>
+    </div>
+</footer>
+
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart-btn">&times;</button></div>
+    <div class="cart-body" id="cart-body"></div>
+    <div class="cart-footer"><div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div><button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button></div>
+</div>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
