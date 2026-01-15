@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Routines for Success | Animal Based Nutrition Blog</title>
+    <meta name="description" content="Explore workout routines, nutrition hacks, and perspectives on a healthy lifestyle.">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png">
+</head>
+<body>
+
+<div class="promo-banner"><p>SAVE WITH FREE USA SHIPPING ON ALL ORDERS OVER $75!</p></div>
+
+<header class="site-header">
+    <div class="container nav-container">
+        <div class="logo-brand"><a href="index.html" class="logo-circle"><img src="assets/img/RealLogo.png" alt="SV Logo"></a><a href="index.html" class="brand-name">Simple Valley</a></div>
+        <nav class="main-nav">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+		<li><a href="blog.html">Routines</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </nav>
+        <div class="nav-meta">
+            <a href="account.html" class="icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></a>
+            <a href="#" class="icon-btn cart-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg><span class="cart-count" id="cartCount">0</span></a>
+        </div>
+        <button class="mobile-nav-toggle"><span></span><span></span><span></span></button>
+    </div>
+</header>
+
+<main>
+    <section class="page-hero-revamped">
+        <div class="hero-overlay">
+            <div class="container fade-in">
+                <h1>The Journal</h1>
+                <p class="lead">Deep dives into beef liver, ancestral health, and clean eating.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container section">
+        <div class="blog-grid">
+            
+            <article class="blog-card fade-in">
+                <div class="blog-img">
+                    <img src="assets/img/liver1.jpg" alt="Cows Grazing">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-date">January 12, 2026</div>
+                    <h3>The Protein Industry’s Dirty Secret: Absorption Matters</h3>
+                    <p>Not all protein ends up in your muscles. Learn why we ditched whey and plants for a whole-animal approach.</p>
+                    <a href="animalprotein1.html" class="read-more">Read Article &rarr;</a>
+                </div>
+            </article>            
+
+<article class="blog-card fade-in">
+                <div class="blog-img">
+                    <img src="assets/img/shark.png" alt="Shark">
+                </div>
+                <div class="blog-content">
+                    <div class="blog-date">January 5, 2026</div>
+                    <h3>Nature’s First Priority: Why Predators Don't Eat Steak</h3>
+                    <p>Most humans accidentally eat like scavengers. Learn the ancient predator protocol for limitless energy that modern diets have forgotten.</p>
+                    <a href="liver1.html" class="read-more">Read Article &rarr;</a>
+                </div>
+            </article>
+
+        </div>
+    </section>
+</main>
+
+<div id="joinTribeBtn" class="floating-tribe-btn">
+    JOIN THE TRIBE <span class="close-float" id="hideFloatingBtn">x</span>
+</div>
+
+<div id="newsletterModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="modal-left">
+            <h2>Join the Tribe</h2>
+            <p>Add yourself to the Founder's List for exclusive early access, beta-testing on new flavors, and savings!</p>
+            <form class="subscribe-form" style="display: block; max-width: 100%;">
+                <input type="email" placeholder="Enter your email" required style="width: 100%; margin-bottom: 12px; border: 2px solid #000;">
+                <button type="submit" class="button" style="width: 100%; background-color: #D97706; font-weight: 800;">I'm in!</button>
+            </form>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: 10px; cursor: pointer; text-align: center;" onclick="document.getElementById('newsletterModal').style.display='none'">No, thanks</p>
+        </div>
+        <div class="modal-right"></div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div class="footer-col">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="ourstory.html">Our Story</a></li>
+		<li><a href="blog.html">Routines</a></li>
+                <li><a href="ingredients.html">Ingredients</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Company</h4>
+            <ul>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Service</a></li>
+                <li><a href="refund.html">Refund Policy</a></li>
+            </ul>
+        </div>
+        <div class="footer-col subscribe-col">
+            <h4>Subscribe to our Newsletter</h4>
+<form class="subscribe-form" action="https://ed77f94d.sibforms.com/serve/MUIFAAP_gcvpkUblNcbmwAmTTH4n1nSHiAfaGcDdNnmYq-86dGj9sWcAd9nqW8CisP2-ZfcdoEhQH3i3R3le4URqoso6kIfmKD_RJDilssGAteOtKkUIqMgXa9x1DSoV20CSrhbEXBDZNzT5ek7TkhAAmjsp_yRCM03xVUfVHEemoWyrg0uLDn5bTDDjzHWUqyR5SbTUayg3cTcMSQ==" method="GET" target="_blank">
+                <input type="email" placeholder="Your email" aria-label="Email" required>
+                <button type="submit" class="button">Subscribe</button>
+            </form>
+            <div class="social-links">
+                <a href="https://www.instagram.com/simplevalleybar?igsh=aTQyenNmenR6eHR5&utm_source=qr" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                </a>
+                <a href="https://www.facebook.com/share/15iTsHbZvu/?mibextid=wwXIfr" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                </a>
+                <a href="https://www.tiktok.com/@simplevalleybar?_t=ZT-90TAgAyyiYh&_r=1" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a4 4 0 1 1-4-4v12a4 4 0 1 1-4-4"></path></svg>
+                </a>
+                <a href="https://www.youtube.com/channel/UC1gO-5Nv1vqAFyLkLshncaQ" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                </a>
+                <a href="https://x.com/simplevalleybar?s=21" aria-label="X" target="_blank" rel="noopener noreferrer">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <p class="copyright-disclaimer">These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
+        <p class="copyright">© <span id="year"></span> Simple Valley. All Rights Reserved.</p>
+    </div>
+</footer>
+
+
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header"><h3>Your Cart</h3><button class="close-btn" id="close-cart-btn">&times;</button></div>
+    <div class="cart-body" id="cart-body"></div>
+    <div class="cart-footer"><div class="cart-subtotal"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div><button class="button checkout-btn" id="checkout-button">Proceed to Checkout</button></div>
+</div>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

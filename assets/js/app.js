@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- GLOBAL SITE-WIDE FUNCTIONS --- //
+    // --- GLOBAL --- //
     const yearEl = document.getElementById('year');
-    if (yearEl) {
-        yearEl.textContent = new Date().getFullYear();
-    }
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
 
     const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
     const mainNav = document.querySelector('.main-nav');
@@ -28,65 +26,118 @@ document.addEventListener('DOMContentLoaded', function() {
         fadeInElements.forEach(element => observer.observe(element));
     }
 
-    // --- INGREDIENTS & FAQ ACCORDION LOGIC --- //
-    function initializeAccordion(selector, headerClass, contentClass) {
-        const items = document.querySelectorAll(selector);
-        if (items.length > 0) {
-            items.forEach(item => {
-                const header = item.querySelector(headerClass);
-                if (header) {
-                    header.addEventListener('click', () => {
-                        item.classList.toggle('active');
-                        const content = item.querySelector(contentClass);
-                        if (content && item.classList.contains('active')) {
-                            content.style.maxHeight = content.scrollHeight + 'px';
-                        } else if (content) {
-                            content.style.maxHeight = null;
-                        }
-                    });
+    // --- POPUP & FLOATING BUTTON LOGIC --- //
+    const modal = document.getElementById('newsletterModal');
+    const closeModal = document.querySelector('.close-modal');
+    const joinTribeBtn = document.getElementById('joinTribeBtn');
+    const hideFloatingBtn = document.getElementById('hideFloatingBtn');
+
+    // 1. Initial Popup Show (Delay 6s)
+    if (modal && !localStorage.getItem('simpleValleyPopupShown')) {
+        setTimeout(() => {
+            modal.style.display = 'block';
+            if(joinTribeBtn) joinTribeBtn.style.display = 'none'; // Hide button when modal is open
+        }, 6000); 
+    } else {
+        // If popup already seen, show the floating button
+        if(joinTribeBtn) joinTribeBtn.style.display = 'flex';
+    }
+
+    // 2. Close Modal triggers
+    function closePopup() {
+        modal.style.display = 'none';
+        localStorage.setItem('simpleValleyPopupShown', 'true');
+        if(joinTribeBtn && !sessionStorage.getItem('hideTribeBtn')) {
+            joinTribeBtn.style.display = 'flex'; // Show floating button
+        }
+    }
+
+    if (closeModal) closeModal.addEventListener('click', closePopup);
+    window.addEventListener('click', (e) => { if (e.target == modal) closePopup(); });
+
+    // 3. Floating Button Trigger
+    if (joinTribeBtn) {
+        joinTribeBtn.addEventListener('click', (e) => {
+            // Prevent clicking the X from triggering the modal
+            if(e.target !== hideFloatingBtn) {
+                modal.style.display = 'block';
+                joinTribeBtn.style.display = 'none';
+            }
+        });
+    }
+
+    // 4. Hide Floating Button (X)
+    if (hideFloatingBtn) {
+        hideFloatingBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            joinTribeBtn.style.display = 'none';
+            sessionStorage.setItem('hideTribeBtn', 'true'); // Remember for session
+        });
+    }
+
+    // --- GALLERY LOGIC (FIXED) --- //
+    const galleryContainer = document.querySelector('.product-gallery');
+    if (galleryContainer) {
+        const mainImg = galleryContainer.querySelector('#mainImg');
+        const thumbs = galleryContainer.querySelectorAll('.thumb');
+        
+        thumbs.forEach(thumb => {
+            thumb.addEventListener('click', (e) => {
+                // Remove active from all
+                thumbs.forEach(t => t.classList.remove('active'));
+                // Add active to clicked (using currentTarget handles inner img clicks)
+                const clickedThumb = e.currentTarget;
+                clickedThumb.classList.add('active');
+                
+                // Update main image
+                const newSrc = clickedThumb.querySelector('img').src;
+                if (mainImg && newSrc) {
+                    mainImg.src = newSrc;
                 }
             });
-        }
+        });
+    }
+
+    // --- ACCORDION LOGIC --- //
+    function initializeAccordion(selector, headerClass, contentClass) {
+        const items = document.querySelectorAll(selector);
+        items.forEach(item => {
+            const header = item.querySelector(headerClass);
+            if (header) {
+                header.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                    const content = item.querySelector(contentClass);
+                    if (content) {
+                        content.style.maxHeight = item.classList.contains('active') ? content.scrollHeight + 'px' : null;
+                    }
+                });
+            }
+        });
     }
     initializeAccordion('.accordion-item', '.accordion-header', '.accordion-content');
     initializeAccordion('.ingredient-card', '.ingredient-header', '.ingredient-desc');
-    
 
-    // --- CART & E-COMMERCE LOGIC --- //
+    // --- CART LOGIC --- //
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
     const cartBtns = document.querySelectorAll('.cart-btn');
     const closeCartBtn = document.getElementById('close-cart-btn');
     const cartBody = document.getElementById('cart-body');
-    const checkoutButton = document.getElementById('checkout-button'); // Keep reference for disabling
-
     let cart = JSON.parse(localStorage.getItem('simpleValleyCart')) || [];
 
-    function saveCart() {
-        localStorage.setItem('simpleValleyCart', JSON.stringify(cart));
-    }
+    function saveCart() { localStorage.setItem('simpleValleyCart', JSON.stringify(cart)); }
+    function openCart() { if(cartSidebar) cartSidebar.classList.add('active'); if(cartOverlay) cartOverlay.classList.add('active'); }
+    function closeCart() { if(cartSidebar) cartSidebar.classList.remove('active'); if(cartOverlay) cartOverlay.classList.remove('active'); }
 
-    function openCart() {
-        if(cartSidebar) cartSidebar.classList.add('active');
-        if(cartOverlay) cartOverlay.classList.add('active');
-    }
-
-    function closeCart() {
-        if(cartSidebar) cartSidebar.classList.remove('active');
-        if(cartOverlay) cartOverlay.classList.remove('active');
-    }
-
-    if (cartSidebar && cartOverlay && closeCartBtn && cartBtns.length > 0) {
-        cartBtns.forEach(btn => btn.addEventListener('click', e => { e.preventDefault(); openCart(); }));
+    if (cartSidebar) {
+        cartBtns.forEach(btn => btn.addEventListener('click', (e) => { e.preventDefault(); openCart(); }));
         closeCartBtn.addEventListener('click', closeCart);
         cartOverlay.addEventListener('click', closeCart);
     }
 
     function updateCartUI() {
         const cartCountEl = document.getElementById('cartCount');
-        if (cartCountEl) {
-            cartCountEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
-        }
+        if (cartCountEl) cartCountEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
 
         if (cartBody) {
             cartBody.innerHTML = '';
@@ -102,11 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <h4>${item.title}</h4>
                                 <p class="cart-item-price">$${itemTotal}</p>
                                 <div class="cart-item-actions">
-                                    <div class="quantity-selector">
-                                        <button class="quantity-btn" data-action="decrease">-</button>
-                                        <input type="number" value="${item.qty}" min="1" readonly>
-                                        <button class="quantity-btn" data-action="increase">+</button>
-                                    </div>
                                     <button class="remove-item-btn" data-action="remove">Remove</button>
                                 </div>
                             </div>
@@ -120,359 +166,297 @@ document.addEventListener('DOMContentLoaded', function() {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
         }
-
         const checkoutBtn = document.getElementById('checkout-button');
-        if (checkoutBtn) {
-            checkoutBtn.disabled = cart.length === 0;
-        }
+        if (checkoutBtn) checkoutBtn.disabled = cart.length === 0;
     }
 
     if (cartBody) {
         cartBody.addEventListener('click', e => {
-            const target = e.target;
-            const parentItem = target.closest('.cart-item');
-            if (!parentItem) return;
-
-            const productId = parentItem.dataset.id;
-            const action = target.dataset.action;
-            const productIndex = cart.findIndex(item => item.id === productId);
-
-            if (productIndex === -1) return;
-
-            if (action === 'increase') {
-                cart[productIndex].qty++;
-            } else if (action === 'decrease') {
-                if (cart[productIndex].qty > 1) {
-                    cart[productIndex].qty--;
-                } else {
-                    if (confirm('Are you sure? This will remove the item from your cart.')) {
-                        cart.splice(productIndex, 1);
-                    }
-                }
-            } else if (action === 'remove') {
-                if (confirm('Are you sure? This will remove the item from your cart.')) {
-                    cart.splice(productIndex, 1);
-                }
-            }
-
-            saveCart();
-            updateCartUI();
-        });
-    }
-    
-    updateCartUI();
-
-    // --- SHOP PAGE SPECIFIC --- //
-    if (document.querySelector('.shop-layout')) {
-        const mainImg = document.getElementById('mainImg');
-        const thumbs = document.querySelectorAll('.thumb');
-        if (mainImg && thumbs.length > 0) {
-            thumbs.forEach(thumb => {
-                thumb.addEventListener('click', function() {
-                    thumbs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    mainImg.src = this.querySelector('img').src;
-                });
-            });
-        }
-
-        const decreaseQtyBtn = document.getElementById('decreaseQty');
-        const increaseQtyBtn = document.getElementById('increaseQty');
-        const quantityInput = document.getElementById('quantity');
-        if (decreaseQtyBtn && increaseQtyBtn && quantityInput) {
-            decreaseQtyBtn.addEventListener('click', () => {
-                let currentQty = parseInt(quantityInput.value);
-                if (currentQty > 1) quantityInput.value = currentQty - 1;
-            });
-            increaseQtyBtn.addEventListener('click', () => {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
-            });
-        }
-
-        const addToCartBtn = document.getElementById('addToCartBtn');
-        if (addToCartBtn) {
-            addToCartBtn.addEventListener('click', function() {
-                const product = { 
-                    id: 'prod_simple_bar_01',
-                    title: 'The Simple Valley Bar', 
-                    price: 39.99,
-                    image: 'assets/img/SecondaryPic2.png',
-                    priceId: 'price_1SHB8kLXAfa3XjXDULT3L8lZ'
-                };
-                const qty = parseInt(quantityInput.value) || 1;
-                
-                const existingProduct = cart.find(p => p.id === product.id);
-                if (existingProduct) {
-                    existingProduct.qty += qty;
-                } else {
-                    cart.push({ ...product, qty });
-                }
-                
+            if (e.target.dataset.action === 'remove') {
+                const id = e.target.closest('.cart-item').dataset.id;
+                cart = cart.filter(item => item.id !== id);
                 saveCart();
                 updateCartUI();
-                openCart();
-
-                this.textContent = 'Added! ✓';
-                this.classList.add('added');
-                this.disabled = true;
-
-                setTimeout(() => {
-                    this.textContent = 'Add to Cart';
-                    this.classList.remove('added');
-                    this.disabled = false;
-                }, 2000);
-            });
-        }
+            }
+        });
     }
-    
-    // --- STRIPE & AUTH0 LOGIC --- //
-    let auth0Client = null;
+    updateCartUI();
 
-    const configureClient = async () => {
-        try {
-            auth0Client = await auth0.createAuth0Client({
-                domain: 'login.simplevalleybar.com',
-                clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
-                authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
-            });
-        } catch (e) {
-            console.error("Error creating Auth0 client:", e);
-        }
-    };
+// --- STRIPE & AUTH0 LOGIC --- //
+let auth0Client = null;
 
-    const login = async () => auth0Client.loginWithRedirect({
+const configureClient = async () => {
+    try {
+        // These are your specific credentials from the old code
+        auth0Client = await auth0.createAuth0Client({
+            domain: 'login.simplevalleybar.com',
+            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
+            authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
+        });
+    } catch (e) {
+        console.error("Error creating Auth0 client:", e);
+    }
+};
+
+const login = async () => {
+    if (!auth0Client) return;
+    await auth0Client.loginWithRedirect({
         authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
     });
+};
 
-    const logout = async () => auth0Client.logout({
+const logout = async () => {
+    if (!auth0Client) return;
+    await auth0Client.logout({
         logoutParams: { returnTo: window.location.origin }
     });
+};
+
+async function fetchAndDisplayOrders() {
+    const container = document.getElementById('order-history-container');
+    if (!container || !auth0Client) return;
+
+    try {
+        const user = await auth0Client.getUser();
+        // This fetches past orders from your backend
+        const response = await fetch('/.netlify/functions/get-order-history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user })
+        });
+        
+        if (!response.ok) throw new Error('Failed to load orders.');
+
+        const orders = await response.json();
+        if (orders.length === 0) {
+            container.innerHTML = '<p>You have not made any orders yet.</p>';
+            return;
+        }
+
+        container.innerHTML = `<div class="orders-list">
+            ${orders.map(order => `
+                <div class="order-item">
+                    <div class="order-summary">
+                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
+                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
+                    </div>
+                    <ul class="order-details">
+                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+                    </ul>
+                </div>`).join('')}
+        </div>`;
+    } catch (error) {
+        console.error('Order fetch error:', error);
+        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
+    }
+}
+
+// Update the Account Link in the header based on login status
+const updateAuthUI = async () => {
+    if (!auth0Client) return;
+    const isAuthenticated = await auth0Client.isAuthenticated();
+    const accountLink = document.getElementById('account-link');
+
+    if (accountLink) {
+        // If logged in, go to account page. If not, trigger login.
+        accountLink.href = isAuthenticated ? '/account.html' : '#';
+        
+        // Remove old listeners to prevent duplicates
+        const newLink = accountLink.cloneNode(true);
+        accountLink.parentNode.replaceChild(newLink, accountLink);
+        
+        if (!isAuthenticated) {
+            newLink.textContent = "Log In";
+            newLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                login();
+            });
+        } else {
+            newLink.textContent = "Account";
+        }
+    }
     
-    async function fetchAndDisplayOrders() {
-        const container = document.getElementById('order-history-container');
-        if (!container) return;
-    
+    // If we are on the account page, load the orders
+    if (window.location.pathname.includes('account.html') && isAuthenticated) {
+        fetchAndDisplayOrders();
+    }
+};
+
+    // --- BUNDLE & SHOP LOGIC --- //
+    const bundleOptions = document.querySelectorAll('.bundle-option');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    let currentSelection = {
+        qty: 1, price: 79.99, title: 'The Simple Valley Bar - 2 Boxes', priceId: 'price_1SgqJDLXAfa3XjXDkbgFa7Ka'
+    };
+
+    if (bundleOptions.length > 0) {
+        bundleOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                bundleOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                
+                currentSelection.price = this.dataset.price;
+                currentSelection.priceId = this.dataset.stripeId;
+                const bundleTitle = this.querySelector('.bundle-title').innerText;
+                currentSelection.title = `The Simple Valley Bar - ${bundleTitle}`;
+                
+                if (addToCartBtn) addToCartBtn.textContent = `Add to Cart - $${currentSelection.price}`;
+            });
+        });
+    }
+
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            const product = { 
+                id: currentSelection.priceId,
+                title: currentSelection.title, 
+                price: parseFloat(currentSelection.price),
+                image: 'assets/img/SecondaryPic2.png',
+                priceId: currentSelection.priceId,
+                qty: 1
+            };
+            const existingProduct = cart.find(p => p.id === product.id);
+if (!existingProduct) {
+  cart.push(product);
+}
+ else { cart.push(product); }
+            
+            saveCart();
+            updateCartUI();
+            openCart();
+
+            const originalText = this.textContent;
+            this.textContent = 'Added! ✓';
+            this.classList.add('added');
+            this.disabled = true;
+            setTimeout(() => {
+                this.textContent = originalText;
+                this.classList.remove('added');
+                this.disabled = false;
+            }, 2000);
+        });
+    }
+
+// --- CHECKOUT LOGIC --- //
+const checkoutBtn = document.getElementById('checkout-button');
+if (checkoutBtn) {
+    const newBtn = checkoutBtn.cloneNode(true);
+    checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
+
+    newBtn.addEventListener('click', async () => {
+        if (cart.length === 0) return;
+
+        // 1. UI Feedback
+        const originalText = newBtn.textContent;
+        newBtn.textContent = 'Processing...';
+        newBtn.disabled = true;
+
         try {
-            const user = await auth0Client.getUser();
-            const response = await fetch('/.netlify/functions/get-order-history', {
+            // 2. Get User Email (if logged in)
+            let userEmail = null;
+            if (auth0Client) {
+                const isAuthenticated = await auth0Client.isAuthenticated();
+                if (isAuthenticated) {
+                    const user = await auth0Client.getUser();
+                    userEmail = user.email;
+                }
+            }
+
+            // 3. Create Checkout Session
+            const response = await fetch('/.netlify/functions/create-checkout-session', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user })
+                // Now we are passing the email correctly again!
+                body: JSON.stringify({ cart: cart, userEmail: userEmail }),
             });
-            if (!response.ok) throw new Error('Failed to load orders.');
-    
-            const orders = await response.json();
-            if (orders.length === 0) {
-                container.innerHTML = '<p>You have not made any orders yet.</p>';
-                return;
-            }
-    
-            container.innerHTML = `<div class="orders-list">
-                ${orders.map(order => `
-                    <div class="order-item">
-                        <div class="order-summary">
-                            <span class="order-date"><strong>Date:</strong> ${order.date}</span>
-                            <span class="order-total"><strong>Total:</strong> ${order.total}</span>
-                        </div>
-                        <ul class="order-details">
-                            ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-                        </ul>
-                    </div>`).join('')}
-            </div>`;
-        } catch (error) {
-            console.error('Order fetch error:', error);
-            container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
-        }
-    }
 
-    // --- MAIN UI UPDATE FUNCTION --- //
-    const updateUI = async () => {
-        const isAuthenticated = await auth0Client.isAuthenticated();
-        const accountLink = document.getElementById('account-link');
-    
-        if (accountLink) {
-            accountLink.href = isAuthenticated ? '/account.html' : '#';
-            if (!isAuthenticated) {
-                accountLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    login();
-                });
+            if (!response.ok) {
+                throw new Error('Server error creating checkout session');
             }
-        }
 
-        const checkoutBtn = document.getElementById('checkout-button');
-        if (checkoutBtn) {
-            const newCheckoutBtn = checkoutBtn.cloneNode(true);
-            checkoutBtn.parentNode.replaceChild(newCheckoutBtn, checkoutBtn);
+            const { url } = await response.json();
             
-            newCheckoutBtn.addEventListener('click', async function() {
-                if (cart.length === 0) return;
-                newCheckoutBtn.disabled = true;
-                newCheckoutBtn.textContent = 'Processing...';
-                
-                const isAuthenticated = await auth0Client.isAuthenticated();
-                const userEmail = isAuthenticated ? (await auth0Client.getUser()).email : null;
-        
-                try {
-                    const response = await fetch('/.netlify/functions/create-checkout-session', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ cart: cart, userEmail: userEmail }),
-                    });
-                    if (!response.ok) throw new Error('Server error');
-                    const { url } = await response.json();
-                    window.location = url;
-                } catch (e) {
-                    console.error(e);
-                    alert('An error occurred. Please try again.');
-                    newCheckoutBtn.disabled = false;
-                    newCheckoutBtn.textContent = 'Proceed to Checkout';
-                }
-            });
-        }
-    
-        if (window.location.pathname.endsWith('account.html')) {
-            if (!isAuthenticated) {
-                window.location.pathname = '/';
-                return;
-            }
-
-            const user = await auth0Client.getUser();
-            
-            document.getElementById('loading-state').style.display = 'none';
-            document.getElementById('account-view').style.display = 'block';
-            document.getElementById('user-profile').innerHTML = `<h3>Welcome back!</h3><p><strong>Email:</strong> ${user.email}</p>`;
-            document.getElementById('logout-button').addEventListener('click', logout);
-
-            await fetchAndDisplayOrders();
-
-            const settingsBtn = document.getElementById('settings-menu-btn');
-            const settingsDropdown = document.getElementById('settings-dropdown-content');
-            const changeEmailBtn = document.getElementById('change-email-btn');
-            const passwordSection = document.getElementById('password-section');
-            const deleteAccountBtn = document.getElementById('delete-account-btn');
-
-            settingsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                settingsDropdown.classList.toggle('active');
-            });
-            window.addEventListener('click', () => {
-                if (settingsDropdown.classList.contains('active')) {
-                    settingsDropdown.classList.remove('active');
-                }
-            });
-
-            const isPasswordUser = user.sub.startsWith('auth0|');
-            if (isPasswordUser) {
-                changeEmailBtn.style.display = 'block';
-                passwordSection.style.display = 'block';
+            // 4. Redirect
+            if (url) {
+                window.location = url;
             } else {
-                changeEmailBtn.style.display = 'none';
-                passwordSection.style.display = 'none';
+                throw new Error('No checkout URL returned.');
             }
 
-            async function handleUserAction(action, payload) {
-                try {
-                    const response = await fetch('/.netlify/functions/manage-user', {
-                        method: 'POST',
-                        body: JSON.stringify({ action, userId: user.sub, ...payload })
-                    });
-                    if (!response.ok) {
-                        const err = await response.json();
-                        throw new Error(err.error || 'Something went wrong.');
-                    }
-                    return await response.json();
-                } catch (error) {
-                    console.error(`Error with action '${action}':`, error);
-                    alert(`Error: ${error.message}`);
-                    return null;
-                }
-            }
-
-            changeEmailBtn.addEventListener('click', async () => {
-                const newEmail = prompt('Please enter your new email address:');
-                if (newEmail) {
-                    const result = await handleUserAction('changeEmail', { newEmail });
-                    if (result) {
-                        alert('Please check your inbox to verify your new email. The confirmation link should arrive within the next 5 minutes.');
-                        document.querySelector('#user-profile p').innerHTML = `<strong>Email:</strong> ${newEmail}`;
-                    }
-                }
-            });
-
-            document.getElementById('reset-btn').addEventListener('click', async () => {
-                const result = await handleUserAction('changePassword');
-                if (result) {
-                    alert('A password reset link has been sent to your email. Please allow up to 5 minutes for the email to arrive.');
-                }
-            });
-
-            deleteAccountBtn.addEventListener('click', async () => {
-                if (confirm('Are you sure you want to delete your account? This action is permanent.')) {
-                    const result = await handleUserAction('deleteAccount');
-                    if (result) {
-                        alert('Your account has been deleted.');
-                        logout();
-                    }
-                }
-            });
+        } catch (e) {
+            console.error(e);
+            alert('Error processing checkout. Please try again.');
+            newBtn.textContent = originalText;
+            newBtn.disabled = false;
         }
-    };
+    });
+}
+// --- SOCIAL CAROUSEL SCROLL LOGIC --- //
+    const track = document.getElementById('communityTrack');
+    const btnLeft = document.getElementById('scrollLeftBtn');
+    const btnRight = document.getElementById('scrollRightBtn');
 
-    // Main initialization flow
-    window.addEventListener('load', async () => {
-        await configureClient();
-        if (!auth0Client) {
-            console.error("Auth0 client failed to initialize.");
-            return;
+    if (track && btnLeft && btnRight) {
+        btnLeft.addEventListener('click', () => {
+            track.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+        btnRight.addEventListener('click', () => {
+            track.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    }
+// --- YOUTUBE MODAL LOGIC --- //
+    const videoModal = document.getElementById('videoModal');
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const socialCards = document.querySelectorAll('.social-card');
+    const closeVideoBtn = document.querySelector('.close-video');
+
+    if (videoModal && youtubePlayer) {
+        // Open Video
+        socialCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const videoId = card.getAttribute('data-youtube-id');
+                if (videoId) {
+                    // Construct embed URL with autoplay
+                    youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                    videoModal.style.display = 'block';
+                } else {
+                    console.log("No YouTube ID found for this card.");
+                }
+            });
+        });
+
+        // Close Video Function (Stops audio by clearing src)
+        const closeVideo = () => {
+            videoModal.style.display = 'none';
+            youtubePlayer.src = ""; 
         };
 
-        const query = window.location.search;
-        if (query.includes('code=') && query.includes('state=')) {
-            try {
-                await auth0Client.handleRedirectCallback();
-                window.history.replaceState({}, document.title, '/account.html');
-            } catch(e) {
-                console.error("Error handling redirect callback:", e);
-            }
+        // Close on X button
+        if (closeVideoBtn) {
+            closeVideoBtn.addEventListener('click', closeVideo);
         }
-        await updateUI();
-    });
 
-    // --- MODIFIED CONTACT FORM SUBMISSION HANDLER --- //
-    const handleContactFormSubmit = async (event) => {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        
-        // Create a URLSearchParams object to properly encode the data.
-        const urlEncodedData = new URLSearchParams(formData);
-        // Netlify's AJAX form submission requires the 'form-name' field to be sent.
-        // The value must match the 'name' attribute of your HTML form tag.
-        urlEncodedData.append('form-name', form.getAttribute('name'));
-
+        // Close on click outside
+        window.addEventListener('click', (e) => {
+            if (e.target == videoModal) {
+                closeVideo();
+            }
+        });
+    }
+// --- INITIALIZATION --- //
+window.addEventListener('load', async () => {
+    await configureClient(); // Connect to Auth0
+    await updateAuthUI();    // Update the UI
+    
+    // Check if we are coming back from a login redirect
+    if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         try {
-            const response = await fetch("/", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: urlEncodedData.toString(),
-            });
-
-            if (response.ok) {
-                document.getElementById('contact-form').style.display = 'none';
-                document.getElementById('form-success-message').style.display = 'block';
-            } else {
-                throw new Error(`Form submission failed. Status: ${response.status}`);
-            }
-        } catch (error) {
-            console.error("Error submitting form:", error);
-            alert("Sorry, there was an error sending your message. Please try again later.");
+            await auth0Client.handleRedirectCallback();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            updateAuthUI();
+        } catch (e) {
+            console.error("Error handling redirect callback", e);
         }
-    };
-
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener("submit", handleContactFormSubmit);
     }
 });
-
+});
