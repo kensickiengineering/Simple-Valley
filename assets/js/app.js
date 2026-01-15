@@ -182,6 +182,106 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     updateCartUI();
 
+// --- STRIPE & AUTH0 LOGIC --- //
+let auth0Client = null;
+
+const configureClient = async () => {
+    try {
+        // These are your specific credentials from the old code
+        auth0Client = await auth0.createAuth0Client({
+            domain: 'login.simplevalleybar.com',
+            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
+            authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
+        });
+    } catch (e) {
+        console.error("Error creating Auth0 client:", e);
+    }
+};
+
+const login = async () => {
+    if (!auth0Client) return;
+    await auth0Client.loginWithRedirect({
+        authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
+    });
+};
+
+const logout = async () => {
+    if (!auth0Client) return;
+    await auth0Client.logout({
+        logoutParams: { returnTo: window.location.origin }
+    });
+};
+
+async function fetchAndDisplayOrders() {
+    const container = document.getElementById('order-history-container');
+    if (!container || !auth0Client) return;
+
+    try {
+        const user = await auth0Client.getUser();
+        // This fetches past orders from your backend
+        const response = await fetch('/.netlify/functions/get-order-history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user })
+        });
+        
+        if (!response.ok) throw new Error('Failed to load orders.');
+
+        const orders = await response.json();
+        if (orders.length === 0) {
+            container.innerHTML = '<p>You have not made any orders yet.</p>';
+            return;
+        }
+
+        container.innerHTML = `<div class="orders-list">
+            ${orders.map(order => `
+                <div class="order-item">
+                    <div class="order-summary">
+                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
+                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
+                    </div>
+                    <ul class="order-details">
+                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+                    </ul>
+                </div>`).join('')}
+        </div>`;
+    } catch (error) {
+        console.error('Order fetch error:', error);
+        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
+    }
+}
+
+// Update the Account Link in the header based on login status
+const updateAuthUI = async () => {
+    if (!auth0Client) return;
+    const isAuthenticated = await auth0Client.isAuthenticated();
+    const accountLink = document.getElementById('account-link');
+
+    if (accountLink) {
+        // If logged in, go to account page. If not, trigger login.
+        accountLink.href = isAuthenticated ? '/account.html' : '#';
+        
+        // Remove old listeners to prevent duplicates
+        const newLink = accountLink.cloneNode(true);
+        accountLink.parentNode.replaceChild(newLink, accountLink);
+        
+        if (!isAuthenticated) {
+            newLink.textContent = "Log In";
+            newLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                login();
+            });
+        } else {
+            newLink.textContent = "Account";
+        }
+    }
+    
+    // If we are on the account page, load the orders
+    if (window.location.pathname.includes('account.html') && isAuthenticated) {
+        fetchAndDisplayOrders();
+    }
+};
+
     // --- BUNDLE & SHOP LOGIC --- //
     const bundleOptions = document.querySelectorAll('.bundle-option');
     const addToCartBtn = document.getElementById('addToCartBtn');
@@ -234,29 +334,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- CHECKOUT LOGIC --- //
-    const checkoutBtn = document.getElementById('checkout-button');
-    if (checkoutBtn) {
-        const newBtn = checkoutBtn.cloneNode(true);
-        checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
-        newBtn.addEventListener('click', async () => {
-            if (cart.length === 0) return;
-            newBtn.textContent = 'Processing...';
-            try {
-                const response = await fetch('/.netlify/functions/create-checkout-session', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cart: cart }),
-                });
-                const { url } = await response.json();
-                window.location = url;
-            } catch (e) {
-                console.error(e);
-                alert('Error processing checkout');
-                newBtn.textContent = 'Proceed to Checkout';
+// --- CHECKOUT LOGIC --- //
+const checkoutBtn = document.getElementById('checkout-button');
+if (checkoutBtn) {
+    const newBtn = checkoutBtn.cloneNode(true);
+    checkoutBtn.parentNode.replaceChild(newBtn, checkoutBtn);
+
+    newBtn.addEventListener('click', async () => {
+        if (cart.length === 0) return;
+
+        // 1. UI Feedback
+        const originalText = newBtn.textContent;
+        newBtn.textContent = 'Processing...';
+        newBtn.disabled = true;
+
+        try {
+            // 2. Get User Email (if logged in)
+            let userEmail = null;
+            if (auth0Client) {
+                const isAuthenticated = await auth0Client.isAuthenticated();
+                if (isAuthenticated) {
+                    const user = await auth0Client.getUser();
+                    userEmail = user.email;
+                }
             }
-        });
-    }
+
+            // 3. Create Checkout Session
+            const response = await fetch('/.netlify/functions/create-checkout-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // Now we are passing the email correctly again!
+                body: JSON.stringify({ cart: cart, userEmail: userEmail }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Server error creating checkout session');
+            }
+
+            const { url } = await response.json();
+            
+            // 4. Redirect
+            if (url) {
+                window.location = url;
+            } else {
+                throw new Error('No checkout URL returned.');
+            }
+
+        } catch (e) {
+            console.error(e);
+            alert('Error processing checkout. Please try again.');
+            newBtn.textContent = originalText;
+            newBtn.disabled = false;
+        }
+    });
+}
 // --- SOCIAL CAROUSEL SCROLL LOGIC --- //
     const track = document.getElementById('communityTrack');
     const btnLeft = document.getElementById('scrollLeftBtn');
@@ -309,4 +440,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+// --- INITIALIZATION --- //
+window.addEventListener('load', async () => {
+    await configureClient(); // Connect to Auth0
+    await updateAuthUI();    // Update the UI
+    
+    // Check if we are coming back from a login redirect
+    if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
+        try {
+            await auth0Client.handleRedirectCallback();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            updateAuthUI();
+        } catch (e) {
+            console.error("Error handling redirect callback", e);
+        }
+    }
+});
 });
