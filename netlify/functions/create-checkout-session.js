@@ -83,11 +83,4 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: error.message }),
     };
   }
-console.log({
-  subtotal,
-  applicableShippingRateId,
-  freeShippingRateId,
-  standardShippingRateId
-});
-
 };
