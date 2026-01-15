@@ -29,14 +29,14 @@ exports.handler = async (event) => {
     }
 
     // Compute subtotal (in cents)
-    const subtotal = cart.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
+    const subtotal = cart.reduce((sum, item) => sum + item.price * 100, 0);
     const applicableShippingRateId =
       subtotal >= 7500 ? freeShippingRateId : standardShippingRateId;
 
     // Map items
     const line_items = cart.map((item) => ({
       price: item.priceId,
-      quantity: item.qty,
+      quantity: 1,
     }));
 
     // Find or create customer
@@ -56,7 +56,7 @@ exports.handler = async (event) => {
       customer: customerId || undefined,
 
       shipping_address_collection: {
-        allowed_countries: ["US", "CA"], // adjust to your region
+        allowed_countries: ["US"], // adjust to your region
       },
 
       shipping_options: applicableShippingRateId

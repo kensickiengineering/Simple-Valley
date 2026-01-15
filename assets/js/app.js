@@ -316,7 +316,10 @@ const updateAuthUI = async () => {
                 qty: 1
             };
             const existingProduct = cart.find(p => p.id === product.id);
-            if (existingProduct) { existingProduct.qty += 1; } else { cart.push(product); }
+if (!existingProduct) {
+  cart.push(product);
+}
+ else { cart.push(product); }
             
             saveCart();
             updateCartUI();
