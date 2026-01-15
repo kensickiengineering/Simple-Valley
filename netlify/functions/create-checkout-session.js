@@ -59,9 +59,10 @@ exports.handler = async (event) => {
         allowed_countries: ["US"], // adjust to your region
       },
 
-      shipping_options: applicableShippingRateId
-        ? [{ shipping_rate: applicableShippingRateId }]
-        : [],
+...(applicableShippingRateId && {
+  shipping_options: [{ shipping_rate: applicableShippingRateId }],
+}),
+
 
       // (Stripe will return normalized addresses, usable in webhook)
       metadata: {
@@ -82,4 +83,11 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: error.message }),
     };
   }
+console.log({
+  subtotal,
+  applicableShippingRateId,
+  freeShippingRateId,
+  standardShippingRateId
+});
+
 };
