@@ -1,6 +1,73 @@
 const isAccountPage =
     window.location.pathname === "/account.html" ||
     window.location.pathname.endsWith("/account.html");
+const configureClient = async () => {
+    try {
+        window.auth0Client = await auth0.createAuth0Client({
+            domain: 'login.simplevalleybar.com',
+            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
+            authorizationParams: {
+                redirect_uri: window.location.origin + '/account.html'
+            }
+        });
+    } catch (e) {
+        console.error("Error creating Auth0 client:", e);
+    }
+};
+
+const login = async () => {
+    if (!window.auth0Client) return;
+    await window.auth0Client.loginWithRedirect({
+        authorizationParams: {
+            redirect_uri: window.location.origin + '/account.html'
+        }
+    });
+};
+
+const logout = async () => {
+    if (!window.auth0Client) return;
+    await window.auth0Client.logout({
+        logoutParams: { returnTo: window.location.origin }
+    });
+};
+const updateAuthUI = async () => {
+    if (!window.auth0Client) return;
+
+    const accountLink = document.getElementById('account-link');
+    if (!accountLink) return;
+
+    const isAuthenticated = await window.auth0Client.isAuthenticated();
+
+    accountLink.textContent = isAuthenticated ? "Account" : "Log In";
+    accountLink.href = "/account.html";
+};
+
+const loadAccountPage = async () => {
+document.getElementById('loading-state').style.display = 'none';
+document.getElementById('account-view').style.display = 'block';
+
+document.getElementById('user-profile').innerHTML = `
+    <h3>Welcome back!</h3>
+    <p><strong>Email:</strong> ${user.email}</p>
+`;
+
+    // Logout button
+const logoutButton = document.getElementById('logout-button');
+
+const performLogout = async () => {
+    if (!window.auth0Client) {
+        console.error("Auth0 client not initialized!");
+        return;
+    }
+
+    try {
+        await window.auth0Client.logout({
+            logoutParams: { returnTo: window.location.origin }
+        });
+    } catch (err) {
+        console.error("Logout failed:", err);
+    }
+};
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -189,36 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // --- STRIPE & AUTH0 LOGIC --- //
 window.auth0Client = null;
 
-const configureClient = async () => {
-    try {
-        window.auth0Client = await auth0.createAuth0Client({
-            domain: 'login.simplevalleybar.com',
-            clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
-            authorizationParams: {
-                redirect_uri: window.location.origin + '/account.html'
-            }
-        });
-    } catch (e) {
-        console.error("Error creating Auth0 client:", e);
-    }
-};
-
-const login = async () => {
-    if (!window.auth0Client) return;
-    await window.auth0Client.loginWithRedirect({
-        authorizationParams: {
-            redirect_uri: window.location.origin + '/account.html'
-        }
-    });
-};
-
-const logout = async () => {
-    if (!window.auth0Client) return;
-    await window.auth0Client.logout({
-        logoutParams: { returnTo: window.location.origin }
-    });
-};
-
 async function fetchAndDisplayOrders() {
     const container = document.getElementById('order-history-container');
     if (!container || !window.auth0Client) return;
@@ -257,45 +294,6 @@ async function fetchAndDisplayOrders() {
         container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
     }
 }
-
-const updateAuthUI = async () => {
-    if (!window.auth0Client) return;
-
-    const accountLink = document.getElementById('account-link');
-    if (!accountLink) return;
-
-    const isAuthenticated = await window.auth0Client.isAuthenticated();
-
-    accountLink.textContent = isAuthenticated ? "Account" : "Log In";
-    accountLink.href = "/account.html";
-};
-
-const loadAccountPage = async () => {
-document.getElementById('loading-state').style.display = 'none';
-document.getElementById('account-view').style.display = 'block';
-
-document.getElementById('user-profile').innerHTML = `
-    <h3>Welcome back!</h3>
-    <p><strong>Email:</strong> ${user.email}</p>
-`;
-
-    // Logout button
-const logoutButton = document.getElementById('logout-button');
-
-const performLogout = async () => {
-    if (!window.auth0Client) {
-        console.error("Auth0 client not initialized!");
-        return;
-    }
-
-    try {
-        await window.auth0Client.logout({
-            logoutParams: { returnTo: window.location.origin }
-        });
-    } catch (err) {
-        console.error("Logout failed:", err);
-    }
-};
 
 // 3. Attach the click event (Connect the button to the logic)
 if (logoutButton) {
