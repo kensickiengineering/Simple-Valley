@@ -258,56 +258,26 @@ async function fetchAndDisplayOrders() {
     }
 }
 
-// Update the Account Link in the header based on login status
 const updateAuthUI = async () => {
     if (!window.auth0Client) return;
-    const isAuthenticated = await window.auth0Client.isAuthenticated();
+
     const accountLink = document.getElementById('account-link');
-
-    if (accountLink) {
-        // If logged in, go to account page. If not, trigger login.
-        accountLink.href = isAuthenticated ? '/account.html' : '#';
-        
-        // Remove old listeners to prevent duplicates
-        const newLink = accountLink.cloneNode(true);
-        accountLink.parentNode.replaceChild(newLink, accountLink);
-        
-        if (!isAuthenticated) {
-            newLink.textContent = "Log In";
-            newLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                login();
-            });
-        } else {
-            newLink.textContent = "Account";
-        }
-    }
-    
-    // If we are on the account page, load the orders
-    if (window.location.pathname.includes('account.html') && isAuthenticated) {
-        fetchAndDisplayOrders();
-    }
-};
-const loadAccountPage = async () => {
-    if (!window.auth0Client) return;
+    if (!accountLink) return;
 
     const isAuthenticated = await window.auth0Client.isAuthenticated();
 
-    if (!isAuthenticated) {
-        login();
-        return;
-    }
+    accountLink.textContent = isAuthenticated ? "Account" : "Log In";
+    accountLink.href = "/account.html";
+};
 
-    const user = await window.auth0Client.getUser();
+const loadAccountPage = async () => {
+document.getElementById('loading-state').style.display = 'none';
+document.getElementById('account-view').style.display = 'block';
 
-    // UI updates
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('account-view').style.display = 'block';
-
-    document.getElementById('user-profile').innerHTML = `
-        <h3>Welcome back!</h3>
-        <p><strong>Email:</strong> ${user.email}</p>
-    `;
+document.getElementById('user-profile').innerHTML = `
+    <h3>Welcome back!</h3>
+    <p><strong>Email:</strong> ${user.email}</p>
+`;
 
     // Logout button
 const logoutButton = document.getElementById('logout-button');
@@ -511,24 +481,20 @@ if (checkoutBtn) {
             }
         });
     }
-// --- INITIALIZATION --- //
 window.addEventListener("load", async () => {
+
+    await configureClient();
+    await updateAuthUI();
 
     if (!isAccountPage) return;
 
-    await configureClient();
-
-    // Handle redirect callback
+    // Handle Auth0 redirect callback
     if (
         window.location.search.includes("code=") &&
         window.location.search.includes("state=")
     ) {
-        try {
-            await window.auth0Client.handleRedirectCallback();
-            window.history.replaceState({}, document.title, "/account.html");
-        } catch (e) {
-            console.error("Auth0 redirect error:", e);
-        }
+        await window.auth0Client.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/account.html");
     }
 
     const isAuthenticated = await window.auth0Client.isAuthenticated();
@@ -536,14 +502,14 @@ window.addEventListener("load", async () => {
     if (!isAuthenticated) {
         await window.auth0Client.loginWithRedirect({
             authorizationParams: {
-                redirect_uri:
-                    window.location.origin + "/account.html"
+                redirect_uri: window.location.origin + "/account.html"
             }
         });
         return;
     }
 
     const user = await window.auth0Client.getUser();
-    loadAccountPage(user);
+    await loadAccountPage(user);
 });
+
 });
