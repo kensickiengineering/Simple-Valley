@@ -281,6 +281,47 @@ const updateAuthUI = async () => {
         fetchAndDisplayOrders();
     }
 };
+const loadAccountPage = async () => {
+    if (!auth0Client) return;
+
+    const isAuthenticated = await auth0Client.isAuthenticated();
+
+    if (!isAuthenticated) {
+        login();
+        return;
+    }
+
+    const user = await auth0Client.getUser();
+
+    // UI updates
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('account-view').style.display = 'block';
+
+    document.getElementById('user-profile').innerHTML = `
+        <h3>Welcome back!</h3>
+        <p><strong>Email:</strong> ${user.email}</p>
+    `;
+
+    // Logout button
+    document.getElementById('logout-button').addEventListener('click', logout);
+
+    // Load orders
+    await fetchAndDisplayOrders();
+
+    // Settings menu logic
+    const settingsBtn = document.getElementById('settings-menu-btn');
+    const settingsDropdown = document.getElementById('settings-dropdown-content');
+
+    settingsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsDropdown.classList.toggle('active');
+    });
+
+    window.addEventListener('click', () => {
+        settingsDropdown.classList.remove('active');
+    });
+};
+
 
     // --- BUNDLE & SHOP LOGIC --- //
     const bundleOptions = document.querySelectorAll('.bundle-option');
@@ -445,18 +486,23 @@ if (checkoutBtn) {
     }
 // --- INITIALIZATION --- //
 window.addEventListener('load', async () => {
-    await configureClient(); // Connect to Auth0
-    await updateAuthUI();    // Update the UI
-    
-    // Check if we are coming back from a login redirect
+    await configureClient();
+
+    // Handle Auth0 redirect
     if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         try {
             await auth0Client.handleRedirectCallback();
             window.history.replaceState({}, document.title, window.location.pathname);
-            updateAuthUI();
         } catch (e) {
             console.error("Error handling redirect callback", e);
         }
     }
+
+    await updateAuthUI();
+
+    if (window.location.pathname.includes('account.html')) {
+        await loadAccountPage();
+    }
 });
+
 });
