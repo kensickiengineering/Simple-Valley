@@ -524,13 +524,16 @@ if (window.location.search.includes("code=") &&
 
 const isAuthenticated = await window.auth0Client.isAuthenticated();
 
-if (!isAuthenticated) {
+if (
+    !isAuthenticated &&
+    window.location.pathname.endsWith("/account.html")
+) {
     await window.auth0Client.loginWithRedirect({
         authorizationParams: {
             redirect_uri: window.location.origin + "/account.html"
         }
     });
-    return; // stop execution
+    return;
 }
 
 const user = await window.auth0Client.getUser();
