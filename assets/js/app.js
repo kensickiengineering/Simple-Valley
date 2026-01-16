@@ -481,6 +481,9 @@ if (checkoutBtn) {
             }
         });
     }
+});
+
+// --- AUTH0 / ACCOUNT INITIALIZATION (GLOBAL SCOPE) ---
 window.addEventListener("load", async () => {
 
     await configureClient();
@@ -488,7 +491,6 @@ window.addEventListener("load", async () => {
 
     if (!isAccountPage) return;
 
-    // Handle Auth0 redirect callback
     if (
         window.location.search.includes("code=") &&
         window.location.search.includes("state=")
@@ -510,6 +512,4 @@ window.addEventListener("load", async () => {
 
     const user = await window.auth0Client.getUser();
     await loadAccountPage(user);
-});
-
 });
