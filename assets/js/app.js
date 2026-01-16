@@ -77,6 +77,44 @@ const performLogout = async () => {
         console.error("Logout failed:", err);
     }
 };
+async function fetchAndDisplayOrders() {
+    const container = document.getElementById('order-history-container');
+    if (!container || !window.auth0Client) return;
+
+    try {
+        const user = await window.auth0Client.getUser();
+        // This fetches past orders from your backend
+        const response = await fetch('/.netlify/functions/get-order-history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user })
+        });
+        
+        if (!response.ok) throw new Error('Failed to load orders.');
+
+        const orders = await response.json();
+        if (orders.length === 0) {
+            container.innerHTML = '<p>You have not made any orders yet.</p>';
+            return;
+        }
+
+        container.innerHTML = `<div class="orders-list">
+            ${orders.map(order => `
+                <div class="order-item">
+                    <div class="order-summary">
+                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
+                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
+                    </div>
+                    <ul class="order-details">
+                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
+                    </ul>
+                </div>`).join('')}
+        </div>`;
+    } catch (error) {
+        console.error('Order fetch error:', error);
+        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -265,45 +303,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // --- STRIPE & AUTH0 LOGIC --- //
 window.auth0Client = null;
 
-async function fetchAndDisplayOrders() {
-    const container = document.getElementById('order-history-container');
-    if (!container || !window.auth0Client) return;
-
-    try {
-        const user = await window.auth0Client.getUser();
-        // This fetches past orders from your backend
-        const response = await fetch('/.netlify/functions/get-order-history', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user })
-        });
-        
-        if (!response.ok) throw new Error('Failed to load orders.');
-
-        const orders = await response.json();
-        if (orders.length === 0) {
-            container.innerHTML = '<p>You have not made any orders yet.</p>';
-            return;
-        }
-
-        container.innerHTML = `<div class="orders-list">
-            ${orders.map(order => `
-                <div class="order-item">
-                    <div class="order-summary">
-                        <span class="order-date"><strong>Date:</strong> ${order.date}</span>
-                        <span class="order-total"><strong>Total:</strong> ${order.total}</span>
-                    </div>
-                    <ul class="order-details">
-                        ${order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('')}
-                    </ul>
-                </div>`).join('')}
-        </div>`;
-    } catch (error) {
-        console.error('Order fetch error:', error);
-        container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
-    }
-}
-
     // Settings menu logic
     const settingsBtn = document.getElementById('settings-menu-btn');
     const settingsDropdown = document.getElementById('settings-dropdown-content');
@@ -316,7 +315,6 @@ async function fetchAndDisplayOrders() {
     window.addEventListener('click', () => {
         settingsDropdown.classList.remove('active');
     });
-)};
 
 
     // --- BUNDLE & SHOP LOGIC --- //
