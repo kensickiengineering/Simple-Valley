@@ -183,15 +183,16 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartUI();
 
 // --- STRIPE & AUTH0 LOGIC --- //
-let auth0Client = null;
+window.auth0Client = null;
 
 const configureClient = async () => {
     try {
-        // These are your specific credentials from the old code
-        auth0Client = await auth0.createAuth0Client({
+        window.auth0Client = await auth0.createAuth0Client({
             domain: 'login.simplevalleybar.com',
             clientId: 'IBrA9anQGfCPi3xxN9JSLWsaBQKrqYlz',
-            authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
+            authorizationParams: {
+                redirect_uri: window.location.origin + '/account.html'
+            }
         });
     } catch (e) {
         console.error("Error creating Auth0 client:", e);
@@ -199,25 +200,27 @@ const configureClient = async () => {
 };
 
 const login = async () => {
-    if (!auth0Client) return;
-    await auth0Client.loginWithRedirect({
-        authorizationParams: { redirect_uri: window.location.origin + '/account.html' }
+    if (!window.auth0Client) return;
+    await window.auth0Client.loginWithRedirect({
+        authorizationParams: {
+            redirect_uri: window.location.origin + '/account.html'
+        }
     });
 };
 
 const logout = async () => {
-    if (!auth0Client) return;
-    await auth0Client.logout({
+    if (!window.auth0Client) return;
+    await window.auth0Client.logout({
         logoutParams: { returnTo: window.location.origin }
     });
 };
 
 async function fetchAndDisplayOrders() {
     const container = document.getElementById('order-history-container');
-    if (!container || !auth0Client) return;
+    if (!container || !window.auth0Client) return;
 
     try {
-        const user = await auth0Client.getUser();
+        const user = await window.auth0Client.getUser();
         // This fetches past orders from your backend
         const response = await fetch('/.netlify/functions/get-order-history', {
             method: 'POST',
@@ -253,8 +256,8 @@ async function fetchAndDisplayOrders() {
 
 // Update the Account Link in the header based on login status
 const updateAuthUI = async () => {
-    if (!auth0Client) return;
-    const isAuthenticated = await auth0Client.isAuthenticated();
+    if (!window.auth0Client) return;
+    const isAuthenticated = await window.auth0Client.isAuthenticated();
     const accountLink = document.getElementById('account-link');
 
     if (accountLink) {
@@ -282,16 +285,16 @@ const updateAuthUI = async () => {
     }
 };
 const loadAccountPage = async () => {
-    if (!auth0Client) return;
+    if (!window.auth0Client) return;
 
-    const isAuthenticated = await auth0Client.isAuthenticated();
+    const isAuthenticated = await window.auth0Client.isAuthenticated();
 
     if (!isAuthenticated) {
         login();
         return;
     }
 
-    const user = await auth0Client.getUser();
+    const user = await window.auth0Client.getUser();
 
     // UI updates
     document.getElementById('loading-state').style.display = 'none';
@@ -395,10 +398,10 @@ if (checkoutBtn) {
         try {
             // 2. Get User Email (if logged in)
             let userEmail = null;
-            if (auth0Client) {
-                const isAuthenticated = await auth0Client.isAuthenticated();
+            if (window.auth0Client) {
+                const isAuthenticated = await window.auth0Client.isAuthenticated();
                 if (isAuthenticated) {
-                    const user = await auth0Client.getUser();
+                    const user = await window.auth0Client.getUser();
                     userEmail = user.email;
                 }
             }
@@ -491,7 +494,7 @@ window.addEventListener('load', async () => {
     // Handle Auth0 redirect
     if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         try {
-            await auth0Client.handleRedirectCallback();
+            await window.auth0Client.handleRedirectCallback();
             window.history.replaceState({}, document.title, window.location.pathname);
         } catch (e) {
             console.error("Error handling redirect callback", e);
