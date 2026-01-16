@@ -1,3 +1,7 @@
+const isAccountPage =
+    window.location.pathname === "/account.html" ||
+    window.location.pathname.endsWith("/account.html");
+
 document.addEventListener('DOMContentLoaded', function() {
 
     // --- GLOBAL --- //
@@ -508,37 +512,38 @@ if (checkoutBtn) {
         });
     }
 // --- INITIALIZATION --- //
-window.addEventListener('load', async () => {
-await configureClient();
+window.addEventListener("load", async () => {
 
-// Handle Auth0 redirect callback FIRST
-if (window.location.search.includes("code=") &&
-    window.location.search.includes("state=")) {
-    try {
-        await window.auth0Client.handleRedirectCallback();
-        window.history.replaceState({}, document.title, "/account.html");
-    } catch (e) {
-        console.error("Auth0 redirect error:", e);
-    }
-}
+    if (!isAccountPage) return;
 
-const isAuthenticated = await window.auth0Client.isAuthenticated();
+    await configureClient();
 
-if (
-    !isAuthenticated &&
-    window.location.pathname.endsWith("/account.html")
-) {
-    await window.auth0Client.loginWithRedirect({
-        authorizationParams: {
-            redirect_uri: window.location.origin + "/account.html"
+    // Handle redirect callback
+    if (
+        window.location.search.includes("code=") &&
+        window.location.search.includes("state=")
+    ) {
+        try {
+            await window.auth0Client.handleRedirectCallback();
+            window.history.replaceState({}, document.title, "/account.html");
+        } catch (e) {
+            console.error("Auth0 redirect error:", e);
         }
-    });
-    return;
-}
+    }
 
-const user = await window.auth0Client.getUser();
-loadAccountPage(user);
+    const isAuthenticated = await window.auth0Client.isAuthenticated();
 
+    if (!isAuthenticated) {
+        await window.auth0Client.loginWithRedirect({
+            authorizationParams: {
+                redirect_uri:
+                    window.location.origin + "/account.html"
+            }
+        });
+        return;
+    }
+
+    const user = await window.auth0Client.getUser();
+    loadAccountPage(user);
 });
-
 });
