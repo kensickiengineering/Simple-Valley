@@ -306,7 +306,27 @@ const loadAccountPage = async () => {
     `;
 
     // Logout button
-    document.getElementById('logout-button').addEventListener('click', logout);
+const logoutButton = document.getElementById('logout-button');
+
+const performLogout = async () => {
+    if (!window.auth0Client) {
+        console.error("Auth0 client not initialized!");
+        return;
+    }
+
+    try {
+        await window.auth0Client.logout({
+            logoutParams: { returnTo: window.location.origin }
+        });
+    } catch (err) {
+        console.error("Logout failed:", err);
+    }
+};
+
+// 3. Attach the click event (Connect the button to the logic)
+if (logoutButton) {
+    logoutButton.addEventListener("click", performLogout);
+}
 
     // Load orders
     await fetchAndDisplayOrders();
@@ -489,23 +509,33 @@ if (checkoutBtn) {
     }
 // --- INITIALIZATION --- //
 window.addEventListener('load', async () => {
-    await configureClient();
+await configureClient();
 
-    // Handle Auth0 redirect
-    if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
-        try {
-            await window.auth0Client.handleRedirectCallback();
-            window.history.replaceState({}, document.title, window.location.pathname);
-        } catch (e) {
-            console.error("Error handling redirect callback", e);
+// Handle Auth0 redirect callback FIRST
+if (window.location.search.includes("code=") &&
+    window.location.search.includes("state=")) {
+    try {
+        await window.auth0Client.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/account.html");
+    } catch (e) {
+        console.error("Auth0 redirect error:", e);
+    }
+}
+
+const isAuthenticated = await window.auth0Client.isAuthenticated();
+
+if (!isAuthenticated) {
+    await window.auth0Client.loginWithRedirect({
+        authorizationParams: {
+            redirect_uri: window.location.origin + "/account.html"
         }
-    }
+    });
+    return; // stop execution
+}
 
-    await updateAuthUI();
+const user = await window.auth0Client.getUser();
+loadAccountPage(user);
 
-    if (window.location.pathname.includes('account.html')) {
-        await loadAccountPage();
-    }
 });
 
 });
