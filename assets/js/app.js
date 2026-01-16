@@ -316,7 +316,7 @@ async function fetchAndDisplayOrders() {
     window.addEventListener('click', () => {
         settingsDropdown.classList.remove('active');
     });
-};
+)};
 
 
     // --- BUNDLE & SHOP LOGIC --- //
