@@ -42,17 +42,26 @@ const updateAuthUI = async () => {
     accountLink.href = "/account.html";
 };
 
-const loadAccountPage = async () => {
-document.getElementById('loading-state').style.display = 'none';
-document.getElementById('account-view').style.display = 'block';
+const loadAccountPage = async (user) => {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('account-view').style.display = 'block';
 
-document.getElementById('user-profile').innerHTML = `
-    <h3>Welcome back!</h3>
-    <p><strong>Email:</strong> ${user.email}</p>
-`;
+    document.getElementById('user-profile').innerHTML = `
+        <h3>Welcome back!</h3>
+        <p><strong>Email:</strong> ${user.email}</p>
+    `;
 
-    // Logout button
-const logoutButton = document.getElementById('logout-button');
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.onclick = async () => {
+            await window.auth0Client.logout({
+                logoutParams: { returnTo: window.location.origin }
+            });
+        };
+    }
+
+    await fetchAndDisplayOrders();
+};
 
 const performLogout = async () => {
     if (!window.auth0Client) {
@@ -294,14 +303,6 @@ async function fetchAndDisplayOrders() {
         container.innerHTML = '<p>Sorry, we could not retrieve your orders at this time.</p>';
     }
 }
-
-// 3. Attach the click event (Connect the button to the logic)
-if (logoutButton) {
-    logoutButton.addEventListener("click", performLogout);
-}
-
-    // Load orders
-    await fetchAndDisplayOrders();
 
     // Settings menu logic
     const settingsBtn = document.getElementById('settings-menu-btn');
