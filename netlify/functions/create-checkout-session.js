@@ -29,14 +29,14 @@ exports.handler = async (event) => {
     }
 
     // Compute subtotal (in cents)
-    const subtotal = cart.reduce((sum, item) => sum + item.price * 100, 0);
+    const subtotal = cart.reduce((sum, item) => sum + item.price * 100 * item.qty, 0);
     const applicableShippingRateId =
       subtotal >= 7500 ? freeShippingRateId : standardShippingRateId;
 
     // Map items
     const line_items = cart.map((item) => ({
       price: item.priceId,
-      quantity: 1,
+      quantity: item.qty,
     }));
 
     // Find or create customer
@@ -56,13 +56,12 @@ exports.handler = async (event) => {
       customer: customerId || undefined,
 
       shipping_address_collection: {
-        allowed_countries: ["US"], // adjust to your region
+        allowed_countries: ["US", "CA"], // adjust to your region
       },
 
-...(applicableShippingRateId && {
-  shipping_options: [{ shipping_rate: applicableShippingRateId }],
-}),
-
+      shipping_options: applicableShippingRateId
+        ? [{ shipping_rate: applicableShippingRateId }]
+        : [],
 
       // (Stripe will return normalized addresses, usable in webhook)
       metadata: {
